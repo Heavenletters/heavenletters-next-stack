@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  bio       String?
+  role      UserRole @default(author)
+  posts     Post[]
+
+  createdAt DateTime @default(now())
+
+  @@map("ks_user")
+}
+
+model Heavenletter {
+  id            Int      @id @default(autoincrement())
+  permalink     String   @unique @db.VarChar(255)  // exact Drupal .html path preserved
+  title         String   @db.VarChar(512)
+  body          String   @db.LongText                  // raw HTML or normalized text, no markdown conversion here
+  locale        String   @db.VarChar(8)              // e.g., en, es, fr
+  publishNumber Int?                        // meta only, not used in URL
+  publishedOn   DateTime?                     // original publish date if present
+  writtenOn     DateTime?                       // original written date if present
+  nid           Int?                                  // legacy Drupal node id for traceability
+  tnid          Int?                                 // translation set id
+  tags          Json?                                // array of tags or taxonomy references
+  embeddings    Json?                          // reserved for semantic search
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("ks_heavenletter")
+  @@index([locale])
+  @@index([publishNumber])
+}
+
+model Post {
+  id          String     @id @default(cuid())
+  title       String
+  content     String?
+  status      PostStatus @default(draft)
+  authorId    String?
+  author      User?      @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  tags        Tag[]
+  createdAt   DateTime   @default(now())
+  publishedAt DateTime?
+
+  @@map("ks_post")
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  name      String
+  posts     Post[]
+  createdAt DateTime @default(now())
+
+  @@map("ks_tag")
+}
+
+enum UserRole {
+  admin
+  author
+  translator
+}
+
+enum PostStatus {
+  draft
+  published
+}

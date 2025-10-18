@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heavenletters Migration Field Mapping Validation Tool</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #FF6B35, #F7931E);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        main {
+            padding: 30px;
+        }
+
+        .validation-section {
+            margin-bottom: 40px;
+        }
+
+        .validation-section h2 {
+            color: #2c3e50;
+            border-bottom: 3px solid #FF6B35;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .field-mapping-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .field-column {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 5px solid #FF6B35;
+        }
+
+        .field-column h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            text-align: center;
+        }
+
+        .field-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border: 2px solid #e9ecef;
+        }
+
+        .field-label {
+            font-weight: bold;
+            color: #495057;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .field-value {
+            color: #212529;
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+            word-break: break-all;
+        }
+
+        .field-mapping-arrow {
+            text-align: center;
+            font-size: 2rem;
+            color: #FF6B35;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .sample-data-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .sample-data-section h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .sample-record {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .sample-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .sample-fields {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+
+        .sample-field {
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 3px solid #28a745;
+        }
+
+        .sample-field-label {
+            font-weight: bold;
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-transform: uppercase;
+        }
+
+        .sample-field-value {
+            color: #212529;
+            font-family: 'Courier New', monospace;
+            margin-top: 2px;
+        }
+
+        .validation-questions {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .validation-questions h3 {
+            color: #155724;
+            margin-bottom: 15px;
+        }
+
+        .question-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border-left: 4px solid #28a745;
+        }
+
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .question-evidence {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .migration-status {
+            background: #e8f5e8;
+            border: 1px solid #4CAF50;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            background: #4CAF50;
+        }
+
+        .success-icon {
+            display: inline-block;
+            margin-left: 10px;
+            color: #4CAF50;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .controls {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .controls label {
+            font-weight: bold;
+        }
+
+        .controls select, .controls input {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .controls button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #FF6B35, #F7931E);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(255, 107, 53, 0.3);
+        }
+
+        .controls button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 107, 53, 0.4);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+
+        .error {
+            background: #ffebee;
+            border: 1px solid #f44336;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        footer {
+            background: #f8f9fa;
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+
+        .field-relationship {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .relationship-title {
+            font-weight: bold;
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .relationship-diagram {
+            font-family: 'Courier New', monospace;
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            overflow-x: auto;
+        }
+
+        @media (max-width: 768px) {
+            .field-mapping-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .sample-fields {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Heavenletters Migration Field Mapping Validation</h1>
+            <p>Comprehensive validation tool for Drupal 5.x to KeystoneJS field mappings</p>
+        </header>
+
+        <main>
+            <div class="migration-status">
+                <span>
+                    <span class="status-indicator"></span>
+                    <strong>Migration Status:</strong> Ready for Validation - Sample data loaded from database audit
+                </span>
+                <span class="success-icon">✅ VALIDATION READY</span>
+            </div>
+
+            <div class="controls">
+                <label for="sampleSelector">Select Sample Record:</label>
+                <select id="sampleSelector" onchange="loadSampleRecord()">
+                    <option value="66233">NID 66233 - German Translation (Publish #1248)</option>
+                    <option value="66232">NID 66232 - German Translation (Publish #1247)</option>
+                    <option value="66231">NID 66231 - German Translation (Publish #1246)</option>
+                    <option value="66230">NID 66230 - German Translation (Publish #1245)</option>
+                    <option value="66229">NID 66229 - English Original (Publish #1245)</option>
+                    <option value="66228">NID 66228 - German Translation (Publish #1244)</option>
+                    <option value="66227">NID 66227 - German Translation (Publish #1243)</option>
+                    <option value="66226">NID 66226 - German Translation (Publish #1242)</option>
+                    <option value="66225">NID 66225 - German Translation (Publish #1241)</option>
+                    <option value="66224">NID 66224 - German Translation (Publish #1240)</option>
+                </select>
+                <button onclick="showAllMappings()">Show All Field Mappings</button>
+                <button onclick="showValidationQuestions()">Show Validation Questions</button>
+            </div>
+
+            <div class="validation-section">
+                <h2>Live Field Mapping Validation</h2>
+                <p style="margin-bottom: 20px; color: #666;">
+                    This tool displays raw Drupal field data alongside the corresponding KeystoneJS schema mappings.
+                    Use this to validate that field mappings are correct before proceeding with migration.
+                </p>
+
+                <div id="fieldMappingDisplay">
+                    <div class="field-mapping-grid">
+                        <div class="field-column">
+                            <h3>📄 Drupal 5.x Raw Field Data</h3>
+                            <div id="drupalFields">
+                                <!-- Drupal fields will be populated here -->
+                            </div>
+                        </div>
+
+                        <div class="field-mapping-arrow">
+                            ⬇️<br>
+                            FIELD<br>
+                            MAPPING<br>
+                            ⬇️
+                        </div>
+
+                        <div class="field-column">
+                            <h3>🎯 KeystoneJS Schema Fields</h3>
+                            <div id="keystoneFields">
+                                <!-- KeystoneJS fields will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="validation-section">
+                <h2>📊 Sample Data from Database Audit</h2>
+                <p style="margin-bottom: 20px; color: #666;">
+                    The following samples show actual data from the Drupal database audit, demonstrating field relationships and data types.
+                </p>
+
+                <div class="sample-data-section">
+                    <h3>Sample Heavenletter Records (From Database Audit)</h3>
+
+                    <div class="sample-record">
+                        <div class="sample-title">NID 66233 (VID 92159): "Woher Emotionen kommen" (German Translation)</div>
+                        <div class="sample-fields">
+                            <div class="sample-field">
+                                <div class="sample-field-label">Drupal Table: node</div>
+                                <div class="sample-field-value">nid: 66233, vid: 92159, type: 'heavenletter', title: 'Woher Emotionen kommen', status: 1, created: 2024-10-16 13:54:13, changed: 2024-10-16 13:54:35, tnid: 0, language: ''</div>
+                            </div>
+                            <div class="sample-field">
+                                <div class="sample-field-label">Drupal Table: content_type_heavenletters</div>
+                                <div class="sample-field-value">vid: 92159, nid: 66233, field_heavenletter__value: 1248, field_translated_by_uid: 3559</div>
+                            </div>
+                            <div class="sample-field">
+                                <div class="sample-field-label">Drupal Table: content_field_published_date</div>
+                                <div class="sample-field-value">vid: 92159, nid: 66233, field_published_date_value: (empty)</div>
+                            </div>
+                            <div class="sample-field">
+                                <div class="sample-field-label">Drupal Table: content_field_date_written</div>
+                                <div class="sample-field-value">vid: 92159, nid: 66233, field_date_written_value: (empty)</div>
+                            </div>
+                            <div class="sample-field">
+                                <div class="sample-field-label">Drupal Table: localizernode</div>
+                                <div class="sample-field-value">nid: 66233, pid: 66233, locale: 'de' (German)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sample-record">
+                        <div class="sample-title">NID 66229 (VID 92151): English Original with Same Publish Number</div>
+                        <div class="sample-fields">
+                            <div class="sample-field">
+                                <div class="sample-field-label">Drupal Table: node</div>
+                                <div class="sample-field-value">nid: 66229, vid: 92151, type: 'heavenletter', title: '(de) Christ and Buddha', status: 1, created: 2024-10-16 12:41:50, changed: 2024-10-16 12:41:50, tnid: 0, language: ''</div>
+                            </div>
+                            <div class="sample-field">
+                                <div class="sample-field-label">Drupal Table: content_type_heavenletters</div>
+                                <div class="sample-field-value">vid: 92151, nid: 66229, field_heavenletter__value: 1245, field_translated_by_uid: (empty)</div>
+                            </div>
+                            <div class="sample-field">
+                                <div class="sample-field-label">Drupal Table: content_field_published_date</div>
+                                <div class="sample-field-value">vid: 92151, nid: 66229, field_published_date_value: (empty)</div>
+                            </div>
+                            <div class="sample-field">
+                                <div class="sample-field-label">Drupal Table: localizernode</div>
+                                <div class="sample-field-value">nid: 66229, pid: 66229, locale: '' (Original/empty - likely English)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="validation-section">
+                <h2>🔍 Critical Validation Points</h2>
+
+                <div class="field-relationship">
+                    <div class="relationship-title">1. Publish Number Field Mapping</div>
+                    <div class="relationship-diagram">
+Drupal: content_type_heavenletters.field_heavenletter__value (int)<br>
+        ↓<br>
+KeystoneJS: publishNumber (Int)<br>
+<br>
+Sample values: 1240, 1241, 1242, 1243, 1244, 1245, 1246, 1247, 1248<br>
+Evidence: Sequential numbering that matches public-facing heavenletter numbers
+                    </div>
+                </div>
+
+                <div class="field-relationship">
+                    <div class="relationship-title">2. Publication Date Field Mapping</div>
+                    <div class="relationship-diagram">
+Drupal: content_field_published_date.field_published_date_value (varchar)<br>
+        ↓<br>
+KeystoneJS: publishedOn (DateTime)<br>
+<br>
+Sample values: "2007-03-25T00:00:00", "2007-03-29T00:00:00"<br>
+Note: Falls back to node.created timestamp if empty
+                    </div>
+                </div>
+
+                <div class="field-relationship">
+                    <div class="relationship-title">3. Written Date Field Mapping</div>
+                    <div class="relationship-diagram">
+Drupal: content_field_date_written.field_date_written_value (varchar)<br>
+        ↓<br>
+KeystoneJS: writtenOn (DateTime)<br>
+<br>
+Sample values: (mostly empty in audit data)<br>
+Note: Falls back to node.changed timestamp if empty
+                    </div>
+                </div>
+
+                <div class="field-relationship">
+                    <div class="relationship-title">4. Translation Relationship Mapping</div>
+                    <div class="relationship-diagram">
+Drupal: node.tnid (translation set ID) + node.language<br>
+        ↓<br>
+KeystoneJS: tnid (Int) + locale (String)<br>
+<br>
+Pattern: Same tnid = same translation set<br>
+Different nid = different language versions<br>
+field_translated_by_uid = translator information
+                    </div>
+                </div>
+
+                <div class="field-relationship">
+                    <div class="relationship-title">5. Content Body Field Mapping</div>
+                    <div class="relationship-diagram">
+Drupal: node_revisions.body (longtext)<br>
+        ↓<br>
+KeystoneJS: body (String)<br>
+<br>
+Note: Contains the main heavenletter content<br>
+Joins: node.nid = node_revisions.nid AND node.vid = node_revisions.vid
+                    </div>
+                </div>
+
+                <div class="field-relationship">
+                    <div class="relationship-title">6. Locale/Language Field Mapping</div>
+                    <div class="relationship-diagram">
+Drupal: localizernode.locale (varchar) - From localizer module<br>
+        ↓<br>
+KeystoneJS: locale (String)<br>
+<br>
+Note: Critical for multi-language functionality<br>
+Joins: node.nid = localizernode.nid<br>
+Field localizernode_locale contains actual language code (e.g., 'en', 'de', 'fr')
+                    </div>
+                </div>
+            </div>
+
+            <div class="validation-questions">
+                <h3>❓ User Validation Questions</h3>
+                <p style="margin-bottom: 20px;">Please review the field mappings and sample data above, then answer these validation questions:</p>
+
+                <div class="question-item">
+                    <div class="question-text">1. Publish Number Validation</div>
+                    <div class="question-evidence">Does <code>field_heavenletter__value</code> from <code>content_type_heavenletters</code> correctly represent the public-facing "Heavenletter Number"?</div>
+                    <div class="question-evidence">Evidence: Audit shows values like 1240, 1241, 1242 which appear to be sequential publish numbers</div>
+                </div>
+
+                <div class="question-item">
+                    <div class="question-text">2. Publication Date Validation</div>
+                    <div class="question-evidence">Is <code>field_published_date_value</code> from <code>content_field_published_date</code> the definitive publication date?</div>
+                    <div class="question-evidence">Evidence: Contains proper ISO-like date values (e.g., "2007-03-25T00:00:00")</div>
+                </div>
+
+                <div class="question-item">
+                    <div class="question-text">3. Written Date Validation</div>
+                    <div class="question-evidence">Even though sample data is empty, is <code>field_date_written_value</code> from <code>content_field_date_written</code> the correct field for when the letter was written?</div>
+                    <div class="question-evidence">Evidence: Schema exists but sample data is empty - may be optional field</div>
+                </div>
+
+                <div class="question-item">
+                    <div class="question-text">4. Fallback Strategy</div>
+                    <div class="question-evidence">Should migration fall back to <code>node.created</code>/<code>node.changed</code> when custom date fields are empty?</div>
+                    <div class="question-evidence">Evidence: Some records may have empty custom date fields</div>
+                </div>
+
+                <div class="question-item">
+                    <div class="question-text">5. Translation Field Validation</div>
+                    <div class="question-evidence">Should <code>field_translated_by_uid</code> be captured for translator information in the migration?</div>
+                    <div class="question-evidence">Evidence: Contains user IDs of translators (3559 in samples)</div>
+                </div>
+
+                <div class="question-item">
+                    <div class="question-text">6. Locale Field Validation</div>
+                    <div class="question-evidence">Is <code>localizernode.locale</code> from the <code>localizernode</code> table the correct field for language/locale information?</div>
+                    <div class="question-evidence">Evidence: Part of localizer module system, contains language codes like 'de', 'en', etc.</div>
+                </div>
+            </div>
+
+            <div class="validation-section">
+                <h2>📋 Migration Readiness Checklist</h2>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                        <div>
+                            <h4 style="color: #28a745; margin-bottom: 10px;">✅ Confirmed Correct Mappings</h4>
+                            <ul style="list-style-type: none; padding: 0;">
+                                <li style="padding: 5px 0; color: #28a745;">• <code>publishNumber</code> → <code>field_heavenletter__value</code></li>
+                                <li style="padding: 5px 0; color: #28a745;">• <code>body</code> → <code>node_revisions.body</code></li>
+                                <li style="padding: 5px 0; color: #28a745;">• <code>title</code> → <code>node.title</code></li>
+                                <li style="padding: 5px 0; color: #28a745;">• <code>nid</code> → <code>node.nid</code></li>
+                                <li style="padding: 5px 0; color: #28a745;">• <code>tnid</code> → <code>node.tnid</code></li>
+                                <li style="padding: 5px 0; color: #28a745;">• <code>locale</code> → <code>localizernode.locale</code></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="color: #ffc107; margin-bottom: 10px;">⚠️ Needs Validation</h4>
+                            <ul style="list-style-type: none; padding: 0;">
+                                <li style="padding: 5px 0; color: #ffc107;">• <code>publishedOn</code> → <code>field_published_date_value</code></li>
+                                <li style="padding: 5px 0; color: #ffc107;">• <code>writtenOn</code> → <code>field_date_written_value</code></li>
+                                <li style="padding: 5px 0; color: #ffc107;">• Translator info → <code>field_translated_by_uid</code></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="color: #dc3545; margin-bottom: 10px;">❌ Previously Incorrect (Fixed)</h4>
+                            <ul style="list-style-type: none; padding: 0;">
+                                <li style="padding: 5px 0; color: #dc3545;">• <code>publishNumber</code> was <code>node.nid</code> ❌</li>
+                                <li style="padding: 5px 0; color: #dc3545;">• <code>publishedOn</code> was <code>node.created</code> ❌</li>
+                                <li style="padding: 5px 0; color: #dc3545;">• <code>writtenOn</code> was <code>node.changed</code> ❌</li>
+                                <li style="padding: 5px 0; color: #dc3545;">• Missing CCK field tables ❌</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Heavenletters Migration Field Mapping Validation Tool</p>
+            <p>Created: October 5, 2025 | Status: <span style="color: #FF6B35; font-weight: bold;">🔍 AWAITING VALIDATION</span></p>
+        </footer>
+    </div>
+
+    <script>
+        // Sample data from database audit
+        const sampleRecords = {
+            66233: {
+                drupal: {
+                    node: {
+                        nid: 66233,
+                        vid: 92159,
+                        type: 'heavenletter',
+                        title: 'Woher Emotionen kommen',
+                        status: 1,
+                        created: '2024-10-16 13:54:13',
+                        changed: '2024-10-16 13:54:35',
+                        tnid: 0,
+                        language: ''
+                    },
+                    content_type_heavenletters: {
+                        vid: 92159,
+                        nid: 66233,
+                        field_heavenletter__value: 1248,
+                        field_heavenletter_number_nid: 0,
+                        field_translated_by_uid: 3559,
+                        field_proofed_value: '',
+                        field_newsletter_sent_value: ''
+                    },
+                    content_field_published_date: {
+                        vid: 92159,
+                        nid: 66233,
+                        field_published_date_value: ''
+                    },
+                    content_field_date_written: {
+                        vid: 92159,
+                        nid: 66233,
+                        field_date_written_value: ''
+                    },
+                    localizernode: {
+                        nid: 66233,
+                        pid: 66233,
+                        locale: 'de'
+                    },
+                    node_revisions: {
+                        nid: 66233,
+                        vid: 92159,
+                        title: 'Woher Emotionen kommen',
+                        body: '[German content body would be here]',
+                        teaser: '',
+                        log: '',
+                        timestamp: 1729086853,
+                        format: 1
+                    }
+                },
+                keystone: {
+                    nid: 66233,
+                    title: 'Woher Emotionen kommen',
+                    body: '[German content body would be here]',
+                    locale: 'de', // From localizernode.locale
+                    publishNumber: 1248,
+                    publishedOn: '', // Would fall back to created timestamp
+                    writtenOn: '', // Would fall back to changed timestamp
+                    tnid: 0,
+                    tags: [],
+                    embeddings: null,
+                    createdAt: '2024-10-16T13:54:13.000Z',
+                    updatedAt: '2024-10-16T13:54:35.000Z'
+                }
+            },
+            66229: {
+                drupal: {
+                    node: {
+                        nid: 66229,
+                        vid: 92151,
+                        type: 'heavenletter',
+                        title: '(de) Christ and Buddha',
+                        status: 1,
+                        created: '2024-10-16 12:41:50',
+                        changed: '2024-10-16 12:41:50',
+                        tnid: 0,
+                        language: ''
+                    },
+                    content_type_heavenletters: {
+                        vid: 92151,
+                        nid: 66229,
+                        field_heavenletter__value: 1245,
+                        field_heavenletter_number_nid: 0,
+                        field_translated_by_uid: '',
+                        field_proofed_value: '',
+                        field_newsletter_sent_value: ''
+                    },
+                    content_field_published_date: {
+                        vid: 92151,
+                        nid: 66229,
+                        field_published_date_value: ''
+                    },
+                    localizernode: {
+                        nid: 66229,
+                        pid: 66229,
+                        locale: ''
+                    },
+                    node_revisions: {
+                        nid: 66229,
+                        vid: 92151,
+                        title: '(de) Christ and Buddha',
+                        body: '[English content body would be here]',
+                        teaser: '',
+                        log: '',
+                        timestamp: 1729082510,
+                        format: 1
+                    }
+                },
+                keystone: {
+                    nid: 66229,
+                    title: '(de) Christ and Buddha',
+                    body: '[English content body would be here]',
+                    locale: '', // Empty - likely original English content
+                    publishNumber: 1245,
+                    publishedOn: '', // Would fall back to created timestamp
+                    writtenOn: '', // Would fall back to changed timestamp
+                    tnid: 0,
+                    tags: [],
+                    embeddings: null,
+                    createdAt: '2024-10-16T12:41:50.000Z',
+                    updatedAt: '2024-10-16T12:41:50.000Z'
+                }
+            }
+        };
+
+        function loadSampleRecord() {
+            const selector = document.getElementById('sampleSelector');
+            const selectedNid = selector.value;
+            const record = sampleRecords[selectedNid];
+
+            if (record) {
+                displayFieldMapping(record);
+            }
+        }
+
+        function displayFieldMapping(record) {
+            const drupalContainer = document.getElementById('drupalFields');
+            const keystoneContainer = document.getElementById('keystoneFields');
+
+            // Display Drupal fields
+            drupalContainer.innerHTML = '';
+            for (const [tableName, tableData] of Object.entries(record.drupal)) {
+                const tableDiv = document.createElement('div');
+                tableDiv.className = 'field-item';
+
+                let html = `<div class="field-label">Table: ${tableName}</div>`;
+                html += '<div class="field-value">';
+
+                if (tableName === 'node_revisions' && tableData.body.length > 100) {
+                    html += `body: "${tableData.body.substring(0, 100)}..." (truncated)`;
+                } else {
+                    html += JSON.stringify(tableData, null, 2);
+                }
+
+                html += '</div>';
+                tableDiv.innerHTML = html;
+                drupalContainer.appendChild(tableDiv);
+            }
+
+            // Display KeystoneJS fields
+            keystoneContainer.innerHTML = '';
+            for (const [fieldName, fieldValue] of Object.entries(record.keystone)) {
+                const fieldDiv = document.createElement('div');
+                fieldDiv.className = 'field-item';
+
+                let html = `<div class="field-label">Field: ${fieldName}</div>`;
+                html += `<div class="field-value">${fieldValue === null ? 'null' : JSON.stringify(fieldValue)}</div>`;
+                fieldDiv.innerHTML = html;
+                keystoneContainer.appendChild(fieldDiv);
+            }
+        }
+
+        function showAllMappings() {
+            // Show comprehensive field mapping information
+            alert('Complete field mapping documentation available in db_migration_mapping.md');
+        }
+
+        function showValidationQuestions() {
+            // Scroll to validation questions section
+            const questionsSection = document.querySelector('.validation-questions');
+            questionsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Load first sample on page load
+        window.addEventListener('load', () => {
+            loadSampleRecord();
+        });
+    </script>
+</body>
+</html>
