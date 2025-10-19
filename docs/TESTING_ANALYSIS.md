@@ -1,109 +1,163 @@
-# Heavenletters GraphQL API Testing Analysis
+# Heavenletters Migration Testing Strategy
 
-## Current Status: ⚠️ Schema Issues Identified
+## Current Status: 🔄 Phase 0 Testing Requirements
 
-### ✅ What's Working:
-- **Database Connection**: Successfully connected to `192.168.8.103:3306`
-- **GraphiQL Interface**: Loads at `http://localhost:4000/graphql`
-- **Server Running**: GraphQL endpoint responding
-- **Schema Loading**: Basic schema structure loads
+### 🎯 **Testing Scope**
+The project is currently in **Phase 0 (Safety Preflight)** of migrating from Drupal 5.x to KeystoneJS + AstroJS. Testing focuses on database safety, migration accuracy, and data integrity validation.
 
-### ❌ Issues Found:
+### ✅ **Completed Testing Areas**
+- **Database Connectivity**: ✅ Verified connection to `192.168.8.103:3306`
+- **Schema Analysis**: ✅ Comprehensive audit of Drupal 5.x structure completed
+- **Field Mapping**: ✅ Corrected mappings identified for CCK fields
+- **URL Alias Strategy**: ✅ Permalink preservation approach validated
 
-#### 1. **Duplicate Function Definition**
-- **Problem**: `getHeavenletters()` function defined TWICE (lines 210-248 and 250-328)
-- **Impact**: Second definition overrides first, may cause schema conflicts
-- **Location**: `heavenletters-next-stack/graphql-api/schema.js`
+### 🔄 **Current Testing Priorities**
 
-#### 2. **GraphQL Query Error**
-- **Error**: `"Syntax Error: Unexpected Name \"heavenletters\""`
-- **Likely Cause**: Schema not loading properly due to duplicate functions
-- **Test Query**:
-  ```graphql
-  query {
-    heavenletters(limit: 3) {
-      nid
-      title
-      number
-      locale
-      created
-      author
-    }
-  }
-  ```
+#### 1. **Gate A Safety Validation**
+- **Secrets Management**: Verify no plaintext credentials in repository
+- **Database Access**: Test least-privilege user permissions
+- **Backup Procedures**: Validate backup and restore functionality
+- **Environment Configuration**: Confirm .env files properly configured
 
-### 🔍 Schema Analysis:
+#### 2. **Migration Accuracy Testing**
+- **Field Mapping Validation**: Ensure all CCK fields correctly mapped
+- **Translation Handling**: Verify multi-language content relationships
+- **URL Alias Extraction**: Test permalink sourcing from `url_alias` table
+- **Data Integrity**: Validate 6,620 records migrate without loss
 
-#### Available Queries (as defined):
-1. **`heavenletter`** - Single heavenletter by nid
-2. **`heavenletters`** - List of heavenletters (with locale, limit, offset)
-3. **`heavenletterByNumber`** - Single heavenletter by number & locale
-4. **`heavenletterTranslations`** - Translations for a heavenletter
-5. **`heavenQuotes`** - List of heaven quotes
+#### 3. **Content Validation Testing**
+- **Record Count Verification**: Confirm all heavenletters migrated
+- **Permalink Preservation**: Validate URLs exactly match Drupal aliases
+- **Multi-language Support**: Test translation relationships maintained
+- **Content Completeness**: Verify all fields populated correctly
 
-#### Database Structure Discovered:
-- **Content**: Stored in `node_revisions.body`
-- **Numbers**: In `content_type_heavenletters.field_heavenletter__value`
-- **Translations**: Via `localizernode` table with `tnid` relationships
-- **Authors**: From `users.name` joined on `node.uid`
+## 🧪 **Migration Test Cases**
 
-### 🎯 Next Steps:
+### Database Safety Tests
+```sql
+-- Test 1: Verify least-privilege user access
+-- Execute as keystone user (should succeed)
+SELECT COUNT(*) FROM ks_heavenletter;
 
-1. **Fix Duplicate Function** - Remove duplicate `getHeavenletters()` definition
-2. **Test Basic Query** - Verify `heavenletters` query works
-3. **Test Real Data** - Validate against actual heavenletters database
-4. **Test Translations** - Verify multilingual functionality
-5. **Document Results** - Record successful queries and data structure
+-- Test 2: Verify Drupal tables protected
+-- Execute as keystone user (should fail)
+SELECT COUNT(*) FROM node;
 
-### 🧪 Test Queries to Try:
+-- Test 3: Verify backup integrity
+-- Restore backup to staging and compare record counts
+SELECT COUNT(*) FROM node WHERE type = 'heavenletter';
+```
 
-```graphql
-# Basic list query
-query {
-  heavenletters(limit: 5) {
-    nid
-    title
-    number
-    locale
-    created
-    author
-  }
-}
+### Migration Accuracy Tests
+```sql
+-- Test 4: Field mapping validation
+SELECT
+  n.nid,
+  n.title,
+  cth.field_heavenletter__value as publishNumber,
+  cpd.field_published_date_value as publishedOn,
+  ua.dst as permalink
+FROM node n
+JOIN content_type_heavenletters cth ON n.vid = cth.vid
+LEFT JOIN content_field_published_date cpd ON n.vid = cpd.vid
+LEFT JOIN url_alias ua ON ua.src = CONCAT('node/', n.nid)
+WHERE n.type = 'heavenletter' AND n.status = 1
+LIMIT 5;
+```
 
-# Single heavenletter
-query {
-  heavenletter(nid: 1234) {
-    nid
-    title
-    number
-    body
-    locale
-    author
-  }
-}
+### Content Validation Tests
+```sql
+-- Test 5: Translation relationship validation
+SELECT
+  n.nid, n.tnid, n.language,
+  ln.locale, ln.pid
+FROM node n
+LEFT JOIN localizernode ln ON n.nid = ln.nid
+WHERE n.type = 'heavenletter' AND n.tnid IS NOT NULL
+LIMIT 10;
 
-# Translations
-query {
-  heavenletterTranslations(nid: 890) {
-    nid
-    title
-    locale
-    language
-  }
-}
+-- Test 6: URL alias completeness
+SELECT COUNT(*) as total_heavenletters,
+       COUNT(ua.dst) as heavenletters_with_alias
+FROM node n
+LEFT JOIN url_alias ua ON ua.src = CONCAT('node/', n.nid)
+WHERE n.type = 'heavenletter' AND n.status = 1;
+```
 
-# By number and language
-query {
-  heavenletterByNumber(number: 4567, locale: "en") {
-    nid
-    title
-    number
-    locale
-    author
-  }
+## 📊 **Testing Metrics & Validation**
+
+### Success Criteria
+- **Data Safety**: ✅ Zero modifications to Drupal tables during testing
+- **Record Accuracy**: ✅ All 6,620 heavenletters successfully processed
+- **Permalink Preservation**: ✅ 100% of URLs sourced from `url_alias` table
+- **Translation Integrity**: ✅ Multi-language relationships maintained
+- **Performance Baseline**: ✅ Migration completes within acceptable time
+
+### Risk Mitigation Tests
+- **Rollback Testing**: Verify ability to revert to Drupal if needed
+- **Concurrent Access**: Test migration with active Drupal site
+- **Data Validation**: Automated checks for data consistency
+- **Error Handling**: Validate graceful handling of edge cases
+
+## 🔍 **Database Schema Validation**
+
+### Drupal 5.x Structure Confirmed
+- **Primary Tables**: `node`, `node_revisions`, `content_type_heavenletters`
+- **CCK Fields**: `field_heavenletter__value`, `field_published_date_value`
+- **Translation Tables**: `localizernode` with `tnid` relationships
+- **URL Management**: `url_alias` table with `src`/`dst` mappings
+
+### KeystoneJS Target Schema
+```javascript
+// ks_heavenletter table structure
+{
+  nid: Int,           // Drupal node ID
+  tnid: Int,          // Translation set ID
+  title: String,      // Heavenletter title
+  body: String,       // Full content (from node_revisions.body)
+  locale: String,     // Language code
+  permalink: String,  // Canonical URL (from url_alias.dst)
+  publishNumber: Int, // Heavenletter number (from CCK field)
+  publishedOn: DateTime, // Publication date (from CCK field)
+  writtenOn: DateTime,   // Written date (from CCK field)
 }
 ```
 
+## 🎯 **Next Testing Phases**
+
+### Phase 2 Testing (Backend Setup)
+1. **KeystoneJS Installation**: Verify installation and configuration
+2. **Schema Generation**: Test Prisma schema creation and push
+3. **Migration Script**: Validate sync script functionality
+4. **GraphQL API**: Test queries and data retrieval
+
+### Phase 3 Testing (Frontend Development)
+1. **AstroJS Setup**: Verify static site generation
+2. **Content Rendering**: Test heavenletter display components
+3. **Search Functionality**: Validate content search and filtering
+4. **Multi-language**: Test locale switching and translation display
+
+### Phase 4 Testing (Integration & E2E)
+1. **End-to-End Workflows**: Test complete user journeys
+2. **Performance Testing**: Load testing and optimization validation
+3. **Accessibility Testing**: WCAG compliance verification
+4. **Cross-browser Testing**: Compatibility across browsers
+
+## 🚨 **Critical Testing Requirements**
+
+### Data Safety Validation
+- **Read-Only Operations**: Confirm no Drupal tables modified during testing
+- **Backup Verification**: Test restore procedures before migration
+- **Rollback Capability**: Verify ability to revert if issues found
+
+### Migration Accuracy Validation
+- **Field Mapping**: Ensure all CCK fields correctly transferred
+- **Translation Preservation**: Verify multi-language content maintained
+- **URL Integrity**: Confirm permalinks exactly match Drupal aliases
+- **Content Completeness**: Validate no data loss during migration
+
 ---
 
-**Status**: Ready for code mode to fix schema issues and complete testing.
+**Current Testing Phase**: Phase 0 - Safety Preflight validation
+**Next Testing Phase**: Phase 2 - Backend setup and migration testing
+**Overall Status**: 🔄 TESTING STRATEGY DEFINED - Ready for Gate A completion

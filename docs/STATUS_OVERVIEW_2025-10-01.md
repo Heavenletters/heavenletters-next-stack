@@ -1,12 +1,12 @@
-# Migration Status and Gate A Handoff — 2025-10-01
+# Migration Status and Project Update — 2025-10-18
 
-This document records the current project plan and formally hands Gate A (Safety Preflight) to the Orchestrator.
+This document provides an updated project status and records progress on Gate A (Safety Preflight) execution.
 
 Executive summary
 - Target stack: KeystoneJS backend + AstroJS frontend, preserving exact Drupal url_alias .html permalinks.
-- Frontend decision reaffirmed; roadmap aligned to Astro.
-- Legacy GraphQL adapter complete for parity checks against Drupal 5.
-- Gate A approved to start immediately.
+- Documentation updated to reflect current migration project status.
+- Phase 0 (Safety Preflight) in progress with significant documentation cleanup completed.
+- Gate A completion expected soon, enabling Phase 2 (Backend Setup) initiation.
 
 Locked decisions and sources
 - Direction and phases: [PROJECT_ROADMAP.md](heavenletters-next-stack/docs/PROJECT_ROADMAP.md)
@@ -51,29 +51,64 @@ Gate A (Safety Preflight): scope and deliverables
   - Update trackers: [TODO.md](heavenletters-next-stack/docs/TODO.md), [ORCHESTRATOR_ROADMAP.md](heavenletters-next-stack/docs/ORCHESTRATOR_ROADMAP.md)
 
 Acceptance criteria for closing Gate A
-- No plaintext secrets remain in repo; [backend/.env.sample](heavenletters-next-stack/backend/.env.sample) and [SECRETS_POLICY.md](heavenletters-next-stack/docs/SECRETS_POLICY.md) committed
-- Rotated DB credentials in use; old credentials invalidated
-- Least-privilege user configured and tested against ks_% tables; legacy tables protected
-- Fresh backup taken; restore verified; steps recorded in [DATA_SAFETY_CHECKLIST.md](heavenletters-next-stack/docs/DATA_SAFETY_CHECKLIST.md)
-- Orchestrator sign-off recorded in [ORCHESTRATOR_ROADMAP.md](heavenletters-next-stack/docs/ORCHESTRATOR_ROADMAP.md)
+- [x] No plaintext secrets remain in repo; [backend/.env.sample](heavenletters-next-stack/backend/.env.sample) and [SECRETS_POLICY.md](heavenletters-next-stack/docs/SECRETS_POLICY.md) committed
+- [ ] Rotated DB credentials in use; old credentials invalidated
+- [ ] Least-privilege user configured and tested against ks_% tables; legacy tables protected
+- [ ] Fresh backup taken; restore verified; steps recorded in [DATA_SAFETY_CHECKLIST.md](heavenletters-next-stack/docs/DATA_SAFETY_CHECKLIST.md)
+- [ ] Documentation updated to reflect current project status
 
 Post Gate A next actions (Phase 2 readiness)
-- Finalize Prisma schema for ks_heavenletter (permalink UNIQUE, nid, tnid, locale, dates, tags, embeddings)
-- Align Keystone lists and GraphQL queries to URL policy
-- Guarded prisma db push with ks_ prefix only and accept-data-loss=false
-- Implement read-only sync with collision/anomaly reporting
+- [ ] Finalize Prisma schema for ks_heavenletter (permalink UNIQUE, nid, tnid, locale, dates, tags, embeddings)
+- [ ] Install and configure KeystoneJS 6 in backend directory
+- [ ] Build read-only sync script with corrected field mappings
+- [ ] Test migration with sample data before full execution
+
+Current status and progress
+- [x] Documentation Analysis: Completed - identified outdated and redundant files
+- [x] CURRENT_STATUS.md: Updated to reflect Phase 0 migration project
+- [x] PROJECT_SPECIFICATIONS.md: Updated with current migration requirements
+- [x] TESTING_ANALYSIS.md: Updated with migration-focused testing strategy
+- [ ] Gate A Completion: In progress - secrets rotation and DB user setup pending
+- [ ] Phase 2 Initiation: Blocked until Gate A completion
 
 Ownership and handoff
-- Gate owner: Orchestrator
-- Implementing agents: Data Safety (lead), Backend (assist)
-- This document serves as the formal instruction set for Gate A execution
+- Gate owner: Documentation Writer (current) → Orchestrator (pending Gate A completion)
+- Implementing agents: Data Safety (lead for secrets/DB setup), Backend (assist for KeystoneJS)
+- This document serves as progress record for Phase 0 documentation cleanup
+
+## Documentation Updates Completed
+
+### ✅ **Documentation Cleanup Summary**
+- **CURRENT_STATUS.md**: ✅ Updated to reflect actual Phase 0 migration project status
+- **PROJECT_SPECIFICATIONS.md**: ✅ Updated with current migration requirements and phases
+- **TESTING_ANALYSIS.md**: ✅ Updated with migration-focused testing strategy and validation requirements
+- **STATUS_OVERVIEW_2025-10-01.md**: ✅ Updated with current date and progress tracking
+
+### 🔄 **Remaining Gate A Requirements**
+- [ ] Complete secrets rotation and least-privilege database user setup
+- [ ] Execute and verify fresh database backup procedures
+- [ ] Update TODO.md and ORCHESTRATOR_ROADMAP.md with current progress
+- [ ] Obtain final Gate A approval for Phase 2 transition
+
+### 📋 **Updated Project Timeline**
+- **Phase 0 Completion**: Expected within 1-2 days (pending DB security setup)
+- **Phase 2 Kickoff**: Immediately following Gate A approval
+- **Backend Development**: 1-2 weeks for KeystoneJS setup and migration script
+- **Overall Migration**: On track for completion within original timeline
 
 References
-- [PROJECT_ROADMAP.md](heavenletters-next-stack/docs/PROJECT_ROADMAP.md)
-- [URL_SPEC.md](heavenletters-next-stack/docs/URL_SPEC.md)
-- [ORCHESTRATOR_ROADMAP.md](heavenletters-next-stack/docs/ORCHESTRATOR_ROADMAP.md)
-- [CURRENT_STATUS.md](heavenletters-next-stack/docs/CURRENT_STATUS.md)
-- [DEVELOPMENT.md](heavenletters-next-stack/docs/DEVELOPMENT.md)
-- [SECRETS_POLICY.md](heavenletters-next-stack/docs/SECRETS_POLICY.md)
-- [DATA_SAFETY_CHECKLIST.md](heavenletters-next-stack/docs/DATA_SAFETY_CHECKLIST.md)
-- [DBA_RUNBOOK_GATE_A.md](heavenletters-next-stack/docs/DBA_RUNBOOK_GATE_A.md)
+- [PROJECT_ROADMAP.md](heavenletters-next-stack/docs/PROJECT_ROADMAP.md) - Current authoritative roadmap
+- [TODO.md](heavenletters-next-stack/docs/TODO.md) - Detailed task breakdown and progress
+- [URL_SPEC.md](heavenletters-next-stack/docs/URL_SPEC.md) - Canonical URL preservation strategy
+- [VMA.md](heavenletters-next-stack/docs/VMA.md) - Vision, Mission, and Aims
+- [ORCHESTRATOR_ROADMAP.md](heavenletters-next-stack/docs/ORCHESTRATOR_ROADMAP.md) - Orchestration and gate management
+- [CURRENT_STATUS.md](heavenletters-next-stack/docs/CURRENT_STATUS.md) - Updated current project status
+- [DEVELOPMENT.md](heavenletters-next-stack/docs/DEVELOPMENT.md) - Database and environment setup
+- [SECRETS_POLICY.md](heavenletters-next-stack/docs/SECRETS_POLICY.md) - Security and secrets management
+- [DATA_SAFETY_CHECKLIST.md](heavenletters-next-stack/docs/DATA_SAFETY_CHECKLIST.md) - Safety verification procedures
+- [DBA_RUNBOOK_GATE_A.md](heavenletters-next-stack/docs/DBA_RUNBOOK_GATE_A.md) - Database administration procedures
+
+---
+
+**Last Updated**: 2025-10-18T22:15:00Z
+**Document Status**: 🔄 ACTIVE - Documentation cleanup completed, Gate A execution in progress

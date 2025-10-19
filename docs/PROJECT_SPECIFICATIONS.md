@@ -1,211 +1,239 @@
-# Heavenletters GraphQL API - Project Specifications
+# Heavenletters Migration Project - Technical Specifications
 
 ## 📋 **Project Overview**
-This document provides comprehensive specifications for completing the Heavenletters GraphQL API project. The project involves creating a GraphQL API that serves Heavenletters content from a Drupal 5.x database with multi-language support.
+This document provides comprehensive specifications for the Heavenletters migration project, which involves migrating from Drupal 5.x to a modern KeystoneJS + AstroJS stack while preserving all content, SEO permalinks, and multi-language support.
 
 ## 🎯 **Current Status Summary**
+- **Project Phase**: Phase 0 (Safety Preflight) - In Progress
 - **Database Connection**: ✅ Established (192.168.8.103:3306)
-- **GraphQL Server**: ✅ Running but needs restart to pick up schema changes
-- **Schema Issues**: ✅ Fixed but server hasn't reloaded changes
-- **Database Inspection**: ✅ In progress to discover actual schema structure
+- **Secrets Management**: 🔄 In progress - credential rotation and .env setup
+- **Database Safety**: 🔄 In progress - least-privilege user and backup verification
+- **Migration Planning**: ✅ Complete - KeystoneJS + AstroJS architecture finalized
 
 ## 🔧 **Technical Architecture**
 
-### Database Schema (Drupal 5.x)
+### Migration Architecture
 ```
-Core Tables:
-- node: Main content nodes
-- node_revisions: Content body and revision data
-- content_type_heavenletters: Custom field data for heavenletter numbers
-- localizernode: Translation relationships
-- users: Author information
+Drupal 5.x (Source) → Read-Only Sync → KeystoneJS (ks_* tables)
+                                                           ↓
+KeystoneJS GraphQL API ←→ AstroJS Frontend (Static Site)
+                                                           ↓
+Production Deployment (Netlify/Vercel + Railway)
 ```
 
-### GraphQL Schema Structure
-```graphql
-type Heavenletter {
-  nid: ID!
-  title: String!
-  number: Int
-  body: String
-  locale: String
-  language: String
-  created: String
-  author: String
-}
+### Database Schema Strategy
+- **Source Database**: Drupal 5.x (preserved untouched)
+- **Target Database**: New KeystoneJS tables with `ks_` prefix
+- **Migration Method**: Read-only sync from Drupal to KeystoneJS
+- **Data Preservation**: Zero modifications to existing Drupal schema
 
-type Query {
-  heavenletters(limit: Int, offset: Int): [Heavenletter]
-  heavenletter(nid: ID!): Heavenletter
-  heavenletterTranslations(nid: ID!): [Heavenletter]
-}
-```
+### Technology Stack
+- **Backend**: KeystoneJS 6 with Prisma ORM (`ks_heavenletter` table)
+- **Frontend**: AstroJS with Tailwind CSS and static generation
+- **Database**: MySQL (192.168.8.103:3306) - dual schema approach
+- **Development**: Remote database connections for all environments
 
 ## 📝 **Detailed Task Breakdown**
 
-### Phase 1: Server Management & Testing
+### Phase 0: Safety Preflight (Current)
 **Priority**: CRITICAL - Must be completed first
 
-1. **Restart GraphQL Server**
-   - Stop current server (Terminal 18)
-   - Restart to pick up schema changes
-   - Verify server starts without errors
-   - Confirm GraphiQL interface loads
+1. **Secrets Management**
+    - Remove plaintext credentials from documentation
+    - Create .env.sample files for all components
+    - Establish secrets policy and rotation procedures
 
-2. **Basic Query Testing**
-   - Test `heavenletters` query with limit parameter
-   - Verify data structure matches expected schema
-   - Validate field mappings (nid, title, number, etc.)
+2. **Database Safety Setup**
+    - Rotate database passwords and update environment variables
+    - Create least-privilege MySQL user for KeystoneJS
+    - Configure access restricted to `ks_*` tables only
 
-3. **Advanced Query Testing**
-   - Test single `heavenletter` query by nid
-   - Test `heavenletterTranslations` query
-   - Verify all fields return correct data types
+3. **Backup & Verification**
+    - Take fresh backup of Drupal database
+    - Verify restore procedures on staging environment
+    - Document backup verification results
 
-### Phase 2: Database Schema Validation
-**Priority**: HIGH - Required for accurate API responses
+### Phase 2: Backend Setup (Next)
+**Priority**: HIGH - Core migration functionality
 
-1. **Complete Database Inspection**
-   - Finish running `inspect-database.js` (Terminal 19)
-   - Document actual table structure
-   - Identify any missing or additional fields
+1. **KeystoneJS Installation**
+    - Install KeystoneJS 6 in backend directory
+    - Configure MySQL connection to remote database
+    - Set up Prisma schema with `ks_heavenletter` table
 
-2. **Schema Alignment**
-   - Compare discovered schema with GraphQL definitions
-   - Update resolvers if field mappings are incorrect
-   - Ensure all promised fields are available
+2. **Data Migration Script**
+    - Build read-only sync script from Drupal to KeystoneJS
+    - Implement proper field mapping from CCK tables
+    - Handle translation relationships and URL aliases
 
-### Phase 3: Data Quality & Performance
-**Priority**: MEDIUM - Important for production readiness
+3. **GraphQL API Development**
+    - Create queries for heavenletters by permalink
+    - Implement locale-based filtering and pagination
+    - Test CRUD operations on new `ks_*` tables
 
-1. **Data Validation**
-   - Test queries with various nid values
-   - Verify translation relationships work correctly
-   - Check for null/empty field handling
+### Phase 3: Frontend Development
+**Priority**: HIGH - User-facing functionality
 
-2. **Performance Testing**
-   - Test with different limit values
-   - Measure query response times
-   - Identify any slow queries needing optimization
+1. **AstroJS Setup**
+    - Initialize AstroJS project with Tailwind CSS
+    - Configure static generation with dynamic routes
+    - Set up MDX support for content rendering
 
-### Phase 4: Documentation & Finalization
-**Priority**: LOW - Nice to have for handoff
+2. **Component Development**
+    - Build content display components
+    - Implement search and language selection
+    - Create responsive, accessible UI
 
-1. **API Documentation**
-   - Document all available queries
-   - Provide example requests and responses
-   - Create usage guidelines
+3. **Static Generation**
+    - Generate pages from KeystoneJS permalinks
+    - Implement RSS feeds per language
+    - Set up social meta tags and SEO
 
-2. **Error Handling**
-   - Test invalid nid values
-   - Verify graceful error responses
-   - Document error codes and messages
+### Phase 4: Integration & Testing
+**Priority**: CRITICAL - Quality assurance
 
-## 🧪 **Test Queries for Validation**
+1. **End-to-End Integration**
+    - Connect AstroJS frontend to KeystoneJS GraphQL
+    - Test content loading and search functionality
+    - Verify multi-language support
 
-### Basic Functionality Test
-```graphql
-query {
-  heavenletters(limit: 3) {
-    nid
-    title
-    number
-    locale
-    created
-    author
-  }
-}
-```
+2. **Content Validation**
+    - Validate all 6,620 heavenletters migrated correctly
+    - Confirm permalink preservation from Drupal
+    - Test translation relationships and locale handling
 
-### Single Record Test
-```graphql
-query {
-  heavenletter(nid: 1234) {
-    nid
-    title
-    number
-    body
-    locale
-    author
-  }
-}
-```
+3. **Performance & Quality**
+    - Load testing and performance optimization
+    - Accessibility compliance (WCAG)
+    - Cross-browser compatibility testing
 
-### Translation Test
-```graphql
-query {
-  heavenletterTranslations(nid: 890) {
-    nid
-    title
-    locale
-    language
-  }
-}
-```
+### Phase 5: Deployment & Launch
+**Priority**: HIGH - Go-live preparation
 
-## 🚨 **Critical Issues to Address**
+1. **Production Infrastructure**
+    - Deploy KeystoneJS backend to production hosting
+    - Configure AstroJS static site deployment
+    - Set up monitoring and error tracking
 
-1. **Server Restart Required**
-   - Current server has cached old schema
-   - Must restart to pick up fixes made by code mode
-   - This is blocking all testing progress
+2. **Final Migration**
+    - Execute complete data sync to production
+    - Verify all content and permalinks
+    - Test search and navigation functionality
 
-2. **Database Inspection Completion**
-   - Need to complete database structure discovery
-   - May reveal additional fields or different structure
-   - Could require schema updates
+3. **Go-Live**
+    - DNS cutover and redirect setup
+    - Final content and SEO validation
+    - Post-launch monitoring and support
 
-3. **Field Mapping Validation**
-   - Ensure all GraphQL fields map to actual database columns
-   - Verify data types match expectations
-   - Check for any missing joins or relationships
+## 🧪 **Migration Validation Requirements**
+
+### Content Migration Testing
+1. **Record Count Validation**
+    - Verify all 6,620 heavenletters migrated successfully
+    - Confirm translation relationships preserved
+    - Validate multi-language content integrity
+
+2. **Field Mapping Validation**
+    ```sql
+    -- Test permalink preservation
+    SELECT COUNT(*) FROM ks_heavenletter WHERE permalink IS NOT NULL;
+
+    -- Test publish number mapping
+    SELECT COUNT(*) FROM ks_heavenletter WHERE publishNumber > 0;
+
+    -- Test locale distribution
+    SELECT locale, COUNT(*) FROM ks_heavenletter GROUP BY locale;
+    ```
+
+3. **URL Alias Validation**
+    ```sql
+    -- Verify all permalinks sourced from Drupal url_alias
+    SELECT DISTINCT permalink FROM ks_heavenletter
+    WHERE permalink NOT IN (
+      SELECT dst FROM drupal_url_alias WHERE src LIKE 'node/%'
+    );
+    ```
+
+## 🚨 **Critical Path & Risk Management**
+
+### Current Blocking Issues
+1. **Gate A Completion Required**
+    - Secrets management and database safety setup must be completed
+    - Least-privilege user creation is blocking KeystoneJS installation
+    - Backup verification required before proceeding
+
+2. **Database Schema Dependencies**
+    - Correct field mapping from Drupal CCK tables must be validated
+    - Translation relationship handling needs verification
+    - URL alias extraction logic must be confirmed
+
+3. **Migration Script Development**
+    - Read-only sync script needs to handle all field mappings correctly
+    - Error handling for data inconsistencies required
+    - Performance optimization for large dataset (6,620 records)
 
 ## 📊 **Success Criteria**
 
-### Minimum Viable Product (MVP)
-- [ ] GraphQL server starts without errors
-- [ ] Basic `heavenletters` query returns data
-- [ ] Single `heavenletter` query works with valid nid
-- [ ] All promised fields return appropriate data
+### Phase 0 Success Criteria (Current)
+- [ ] Secrets removed from repository and .env files configured
+- [ ] Database credentials rotated and least-privilege user operational
+- [ ] Fresh backup taken and restore verification completed
+- [ ] Gate A approved for Phase 2 transition
 
-### Full Feature Set
-- [x] Translation queries work correctly
-- [x] All data types are accurate
-- [x] Error handling is graceful
-- [x] Performance is acceptable
-- [x] Documentation is complete
+### Overall Migration Success Criteria
+- [ ] All 6,620 heavenletters successfully migrated to KeystoneJS
+- [ ] All permalinks exactly preserved from Drupal url_alias table
+- [ ] Multi-language content and translations properly maintained
+- [ ] SEO rankings preserved or improved post-migration
+- [ ] Performance improved over Drupal 5.x baseline
 
-## 🔄 **Handoff Instructions for Orchestrator Mode**
+## 🔄 **Next Phase Transition**
 
-1. **Immediate Actions Required**:
-   - Coordinate server restart (Terminal 18)
-   - Monitor database inspection completion (Terminal 19)
-   - Validate test queries work as expected
+### Phase 0 to Phase 2 Handoff Requirements
+1. **Gate A Approval**:
+    - Complete secrets sanitization and rotation
+    - Verify least-privilege database user functionality
+    - Confirm backup and restore procedures
 
-2. **Mode Coordination Strategy**:
-   - Use **Code Mode** for server operations and testing
-   - Use **Debug Mode** if errors occur during testing
-   - Return to **Architect Mode** for any design changes needed
+2. **Technical Readiness**:
+    - Database schema analysis completed
+    - Field mapping validated against Drupal CCK structure
+    - Migration script architecture designed
 
-3. **Progress Tracking**:
-   - Update CURRENT_STATUS.md after each major milestone
-   - Document any schema changes or discoveries
-   - Record successful test results
+3. **Documentation Updates**:
+    - Update TODO.md with Phase 2 task breakdown
+    - Ensure all documentation aligns with current roadmap
+    - Document any schema discoveries or field mapping corrections
 
-4. **Critical Success Path**:
-   ```
-   Server Restart → Basic Query Test → Schema Validation → Advanced Testing → Documentation
-   ```
+### Critical Success Path
+```
+Gate A Completion → KeystoneJS Installation → Schema Design → Migration Script → GraphQL API
+```
 
 ## 📁 **Project Structure**
 ```
 heavenletters-next-stack/
-├── graphql-api/           # Main GraphQL server
-├── inspect-database.js    # Database discovery script
-├── CURRENT_STATUS.md      # Live status tracking
-└── PROJECT_SPECIFICATIONS.md  # This document
+├── backend/               # KeystoneJS application
+│   ├── keystone.ts       # Main application config
+│   ├── schema.ts         # GraphQL schema definition
+│   └── sync-heavenletters.js # Migration script
+├── frontend/             # AstroJS static site (planned)
+├── docs/                 # Project documentation
+│   ├── PROJECT_ROADMAP.md    # Current roadmap
+│   ├── TODO.md              # Task tracking
+│   ├── URL_SPEC.md          # URL strategy
+│   └── CURRENT_STATUS.md    # Current status
+└── scripts/              # Utility scripts
 ```
+
+## 🎯 **Immediate Next Steps**
+
+1. **Complete Phase 0**: Finish Gate A safety requirements
+2. **Initiate Phase 2**: Begin KeystoneJS installation once Gate A approved
+3. **Schema Development**: Design and validate ks_heavenletter schema
+4. **Migration Testing**: Test sync script with sample data
+5. **Documentation**: Maintain current status and progress tracking
 
 ---
 
-**Next Action**: Hand this specification to Orchestrator Mode to coordinate the completion of Phase 1 tasks, starting with the critical server restart.
+**Next Action**: Complete Gate A (Safety Preflight) requirements before proceeding to Phase 2 (Backend Setup).
