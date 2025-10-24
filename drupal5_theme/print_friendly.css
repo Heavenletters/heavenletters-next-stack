@@ -1,0 +1,61 @@
+.print-title {
+font-size:150%;
+padding-bottom:0;
+margin-bottom:0;
+margin-top:0;
+}
+p {
+clear:both;
+}
+.field-field-heavenletter- {
+display:block;
+float:left;
+margin-right: 10px;
+margin
+}
+.god-said{
+margin-top:25px;
+}
+div.field-field-published-date div.field-label-inline-first {
+display:none;
+}
+
+span.date-display-single:before {
+content: "written on ";
+}
+.field-label-inline-first {
+font-weight:bold;
+padding:0 0 10px;
+margin-top:0;
+}
+#subscriptions-ui-node-form,.print-footer {
+display:none;
+border:1px #e00 solid !important;
+}
+.print-taxonomy,
+.field-field-date-written { display:none; }
+div.field-field-heavenletter-:after {
+display:block;
+content: "God said: ";
+clear:both;
+margin-top: 15px;
+margin-bottom:15px;
+width:100%;
+}
+.print-site_name { display:none; }
+.print-hr { display:none; }
+body {
+margin:0em;
+padding:0em;
+font-size:1em;
+}
+p {
+line-height: 1.1em;
+margin:.5em 0 .5em 0;
+padding:0;
+text-indent:1em;
+}
+
+.field-field-proofed {
+display:none;
+}

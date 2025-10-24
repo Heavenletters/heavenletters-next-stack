@@ -1,0 +1,177 @@
+<?php
+function view_page_load($view_id,$nodes_number,$viewarg, $type, $style) {
+$myview = views_get_view($view_id);
+if ($viewarg) {
+$myview_args = array(0 => $viewarg);
+}
+if ($type) {
+$myview->page_type = $type;
+}
+if (!$style) {
+$style = 'block';
+}
+$contenido = views_build_view($style, $myview, $myview_args, false, $nodes_number);
+return $contenido;
+}
+
+function views_argument($view_id,$nodes_number) {
+//custom if else statement to embed a view
+$output = '';
+$no_of_nodes = $nodes_number;
+if (arg(0) == 'node' && is_numeric(arg(1))) {
+$nodo = node_load(arg(1));
+$my_view_nid=$nodo->nid;
+}
+$my_node_arg=arg(0);
+//$viewarg = "";
+if ($is_front){
+$viewarg = "frontpage";
+//$no_of_nodes ="2";
+} elseif(($my_view_nid=="20") || ($my_view_nid=="21")){
+$viewarg = "about";
+} elseif($my_node_arg=="readercomments.html"){
+$viewarg = "reader";
+} elseif(($nodo->parent=="3865") || ($my_view_nid=="3865")){
+$viewarg = "godwriting";
+} elseif(($nodo->parent=="3789") || ($nodo->nid=="3789")){
+$viewarg = "about";
+} elseif(($nodo->parent=="19") || ($nodo->nid=="19")) {
+$viewarg = "faqs";
+}else { 
+$viewarg = "";
+}
+//print $viewarg;
+if ($viewarg != '') { 
+$contenido = view_page_load($view_id,$nodes_number,$viewarg,'','');
+}
+return $contenido;
+}
+
+function theme_views_sidebar($view_id,$nodes_number) {
+$contenido = views_argument($view_id,$nodes_number);
+if ($contenido != '') {
+	$output = '<div class="god_said"></div>';
+	$output .= '<div class="godsaid"></div>';
+	$output .= '<div class="block " id="block-views">';
+	$output .= '<div class="top-block"></div>';
+	$output .= '<div class="block-body">';
+	$output .= '<div class="content">'. $contenido .'</div>';
+	$output .= '<div class="clear"></div>';   
+	$output .= '<div class="bottom-block"></div></div></div>';
+ } 
+
+return $output;
+}
+
+function heaven_pager() {
+if (is_numeric(arg(1))) {
+$nid = arg(1);
+}
+$sqlFechaIdioma = "SELECT field_heavenletter__value number, locale idioma
+      FROM content_type_heavenletters
+      INNER JOIN localizernode
+      ON content_type_heavenletters.nid = localizernode.nid
+      WHERE content_type_heavenletters.nid = %d
+     ORDER BY field_heavenletter__value ASC LIMIT 1";
+$resFechaIdioma = db_query($sqlFechaIdioma, $nid);
+$cartaActual = db_fetch_object($resFechaIdioma);
+
+//Ahora busco las cartas anteriores y siguientes para esa fecha de publicacion y ese idioma
+$sqlCartaAnt = "SELECT node.nid, type, title
+FROM node
+WHERE status = 1 AND type = 'heavenletters' AND nid =
+(   SELECT content_type_heavenletters.nid
+    FROM content_type_heavenletters
+    INNER JOIN localizernode ON localizernode.nid = content_type_heavenletters.nid
+    WHERE  field_heavenletter__value < '$cartaActual->number' AND locale = '$cartaActual->idioma'
+    ORDER BY field_heavenletter__value DESC LIMIT 1
+   ) ;";
+$sqlCartaSig = "SELECT node.nid, type, title
+FROM node
+WHERE status = 1 AND type = 'heavenletters' AND nid =
+(   SELECT content_type_heavenletters.nid
+    FROM content_type_heavenletters
+    INNER JOIN localizernode ON localizernode.nid = content_type_heavenletters.nid
+    WHERE field_heavenletter__value > '$cartaActual->number' AND locale = '$cartaActual->idioma'
+    ORDER BY field_heavenletter__value ASC LIMIT 1
+   ) ;";
+$ResCartaSig = db_query($sqlCartaSig);
+$ResCartaAnt = db_query($sqlCartaAnt);
+
+$cartaAnt = db_fetch_object($ResCartaAnt);
+$cartaSig = db_fetch_object($ResCartaSig);
+
+if($cartaAnt)
+	$title = max_length($cartaAnt->title);
+	$out .= '<div class="pager" style="float:left; clear:none">'. l('<< '. $title , "node/$cartaAnt->nid", array('title' => $cartaAnt->title)) .'</div>';
+if($cartaSig)
+	$title = max_length($cartaSig->title);
+	$out .= '<div class="pager" style="float:right; clear:none">'. l($title .' >>', "node/$cartaSig->nid", array('title' => $cartaSig->title)) .'</div>';
+if (!$teaser) {	
+return '<div class="cck-pager">' . $out . '<div class="clear"></div></div>';
+}
+
+}
+function max_length($text) {
+$length = 25;
+if (drupal_strlen($text) > $length) {
+    $title = substr($text,0,$length) .'...';
+}
+else {
+    $title = $text;
+}
+return $title;
+}
+function sutra_pager() {
+if (is_numeric(arg(1))) {
+$nid = arg(1);
+}
+$sqlFechaIdioma = "SELECT field_sutra_number_value number, locale idioma
+      FROM {content_type_heaven_sutras}
+      INNER JOIN {localizernode}
+      ON content_type_heaven_sutras.nid = localizernode.nid
+      WHERE content_type_heaven_sutras.nid = %d
+     ORDER BY field_sutra_number_value ASC LIMIT 1";
+$resFechaIdioma = db_query($sqlFechaIdioma, $nid);
+$cartaActual = db_fetch_object($resFechaIdioma);
+
+
+//Ahora busco las cartas anteriores y siguientes para esa fecha de publicacion y ese idioma
+$sqlCartaAnt = "SELECT node.nid, type, title
+FROM node
+WHERE status = 1 AND type = 'heaven_sutras' AND nid =
+(   SELECT content_type_heaven_sutras.nid
+    FROM content_type_heaven_sutras
+    INNER JOIN localizernode ON localizernode.nid = content_type_heaven_sutras.nid
+    WHERE  field_sutra_number_value < '$cartaActual->number' AND locale = '$cartaActual->idioma'
+    ORDER BY field_sutra_number_value DESC LIMIT 1
+   ) ;";
+$sqlCartaSig = "SELECT node.nid, type, title
+FROM node
+WHERE status = 1 AND type = 'heaven_sutras' AND nid =
+(   SELECT content_type_heaven_sutras.nid
+    FROM content_type_heaven_sutras
+    INNER JOIN localizernode ON localizernode.nid = content_type_heaven_sutras.nid
+    WHERE field_sutra_number_value > '$cartaActual->number' AND locale = '$cartaActual->idioma'
+    ORDER BY field_sutra_number_value ASC LIMIT 1
+   ) ;";
+$ResCartaSig = db_query($sqlCartaSig);
+$ResCartaAnt = db_query($sqlCartaAnt);
+
+$cartaAnt = db_fetch_object($ResCartaAnt);
+$cartaSig = db_fetch_object($ResCartaSig);
+
+if($cartaAnt) {
+	$title = max_length($cartaAnt->title);
+	$out .= '<div class="pager" style="float:left; clear:none">'. l('<< '. $title , "node/$cartaAnt->nid", array('title' => $cartaAnt->title)) .'</div>';
+}
+if($cartaSig) {
+	$title = max_length($cartaSig->title);
+	$out .= '<div class="pager" style="float:right; clear:none">'. l($title .' >>', "node/$cartaSig->nid", array('title' => $cartaSig->title)) .'</div>';
+	}
+	if (!$teaser) {	
+return '<div class="cck-pager">' . $out . '<div class="clear"></div></div>';
+}
+}
+
+

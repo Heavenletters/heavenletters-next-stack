@@ -1,0 +1,32 @@
+Hacks
+
+Textarea.js 
+added <span></span> to line no. 7
+      $(this).wrap('<div class="resizable-textarea"><span></span></div>')
+      $(this).wrap('<div class="resizable-textarea"></div>')
+
+Forum.module hacked to display number of views
+Changed sql statement on line 811
+add lines 1033 to 1035 that checks to see of stats module is installed and then displays # of views
+Forum.module: line 962
+$header = array(t('Forum'), t('Topics'), t('Posts'), t('Last post'));
+changed to (added s to Forum)
+$header = array(t('Forums'), t('Topics'), t('Posts'), t('Last post'));
+
+imagecache.module (linea 684)
+  if ($path) {
+  return '<img src="'. $imagecache_path .'" alt="'. check_plain($alt) .'" title="'. check_plain($title) .'" '. $attributes .' />'; }
+
+common.inc linea 1739
+    return str_replace(array('%2F', '%26', '%23', '%3F', '%3D'),
+                       array('/', '%2526', '%2523', '?', '='),
+
+Comment.module
+linea 305 y linea 315
+            'href' => "node/$node->nid?com=open",//agrega ?com=open al link de comment
+linea 1668     return array('node/'. $form_values['nid'] .'?com=open', NULL, "comment-$cid");//agrega ?com=open al link de comment
+
+Print Module
+move this line, from line 6 
+	    <div class="print-site_name"><?php  print $print["site_name"] ?></div>	
+to line 21

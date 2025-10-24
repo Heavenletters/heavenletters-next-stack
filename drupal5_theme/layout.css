@@ -1,0 +1,98 @@
+#container {
+  margin: 0 auto;
+  padding:20px 0 0;
+}
+body.ntype-heavenletters #container {
+  width:790px;
+  margin:0 auto;
+}
+body.ntype-heavenletters #sidebar-left {
+ display:none;
+}
+#container {
+  padding:25px 0 0;
+}
+body.centralized #container {
+  width:780px;
+  margin:0 auto;
+}
+#main {
+  float: left;
+  width: 100%;
+}
+body.sidebar-left #main {
+  margin-left: -210px;
+}
+body.sidebar-right #main {
+  margin-right: -210px;
+}
+body.forum #main {
+  margin-right:-180px;
+}
+body.both-sidebars #main {
+  margin: 0 -165px 0 -210px;
+}
+
+#squeeze {
+  position: relative;
+  padding: 0 1em;
+}
+body.forum #squeeze {
+  padding: 0;
+}
+/* And add blanks left and right for the sidebars to fill */
+body.sidebar-left #squeeze {
+  xmargin-left: 210px;
+}
+body.sidebar-right #squeeze {
+  margin-right: 210px;
+}
+body.both-sidebars #squeeze {
+  margin: 0 165px 0 210px;
+}
+body.forum #squeeze {
+  margin-right:180px;
+  padding-left:15px;
+}
+/* We ensure the sidebars are still clickable using z-index */
+#container .sidebar {
+  margin: 0 0 5em;
+  width: 205px;
+  float: left;
+  z-index: 2;
+  position: relative;
+}
+#container #sidebar-left {
+  width:165px;
+}
+
+#container .sidebar .block {
+  margin: 0 0 5px 0;
+}
+
+#sidebar-left .block {
+  padding: 0 15px 0 0px;
+}
+
+#sidebar-right .block {
+  padding: 0 0px 0 15px;
+}
+
+.block .content {
+  margin: 0.5em 0;
+}
+
+#footer {
+  float: none;
+  clear: both;
+  margin: 4em 0 0;
+}
+/*
+body.sidebar-right #footer {
+  margin-right: -210px;
+}
+
+body.both-sidebars #footer {
+  margin: 0 -210px;
+}
+
