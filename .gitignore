@@ -53,3 +53,9 @@ test-*
 # Temporary files
 *.tmp
 *.temp
+
+
+# Legacy Drupal 5 theme
+drupal5_theme/flags/*
+drupal5_theme/images/*
+drupal5_theme/pics/*
