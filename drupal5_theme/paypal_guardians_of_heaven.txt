@@ -1,0 +1,11 @@
+<script 
+  src="https://www.paypal.com/sdk/js?client-id=BAA73OfrdoCRHJPoxqfDITu_I1XlKG7zS4k_z6bBVrwfFWQanLfwffT3GQKVGJADQXkNWEgUuu5o9R5UTE&components=hosted-buttons&disable-funding=venmo&currency=USD">
+</script>	
+
+
+<div id="paypal-container-M4MTQEDXBMMLS"></div>
+<script>
+  paypal.HostedButtons({
+    hostedButtonId: "M4MTQEDXBMMLS",
+  }).render("#paypal-container-M4MTQEDXBMMLS")
+</script>
