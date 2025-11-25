@@ -1,0 +1,259 @@
+# Drupal 5 Heavenletters Database Schema (Machine-Readable)
+
+schema:
+  name: "Drupal 5 Heavenletters"
+  description: "Complex Drupal 5.x schema for Heavenletters content management, featuring CCK fields, revisioning, and localization."
+  version: "5.x"
+  database_engine: "MySQL"
+  key_characteristics:
+    - "Uses Drupal's Content Construction Kit (CCK) for custom fields stored in separate tables"
+    - "Revision-based content system where published vid may not be the latest"
+    - "Localization via localizernode table with language codes (e.g., 'eng')"
+    - "URL aliases for SEO-friendly paths"
+
+tables:
+  - name: "node"
+    description: "Central table for all content nodes. Contains metadata but not the actual content body."
+    primary_key: "nid"
+    fields:
+      - name: "nid"
+        type: "int(10) unsigned"
+        description: "Unique identifier for a piece of content."
+      - name: "vid"
+        type: "int(10) unsigned"
+        description: "The version ID of the currently published revision. WARNING: Do not use for joining with CCK tables; may not be the latest revision."
+      - name: "type"
+        type: "varchar(32)"
+        description: "Content type (e.g., 'heavenletters')."
+      - name: "language"
+        type: "varchar(12)"
+        description: "Language code (empty string for English in this schema, use localizernode for proper localization)."
+      - name: "title"
+        type: "varchar(255)"
+        description: "Node title."
+      - name: "uid"
+        type: "int(10) unsigned"
+        description: "Author user ID."
+      - name: "status"
+        type: "tinyint(4)"
+        description: "Publication status (1 = published)."
+      - name: "created"
+        type: "int(11)"
+        description: "Creation timestamp (Unix)."
+      - name: "changed"
+        type: "int(11)"
+        description: "Last modification timestamp (Unix)."
+      - name: "comment"
+        type: "int(11)"
+        description: "Comment settings."
+      - name: "promote"
+        type: "tinyint(4)"
+        description: "Promotion status."
+      - name: "moderate"
+        type: "tinyint(4)"
+        description: "Moderation status."
+      - name: "sticky"
+        type: "tinyint(4)"
+        description: "Sticky status."
+      - name: "tnid"
+        type: "int(10) unsigned"
+        description: "Translation set ID for multi-language content."
+    relationships:
+      - type: "one-to-many"
+        target_table: "node_revisions"
+        on_column: "nid"
+        description: "Each node can have multiple revisions."
+    notes:
+      - "CCK fields are stored in separate tables, not here."
+
+  - name: "node_revisions"
+    description: "Stores content revisions with title and body text. Use MAX(vid) to get the latest revision."
+    primary_key: "vid"
+    fields:
+      - name: "nid"
+        type: "int(10) unsigned"
+        description: "Node ID (foreign key to node.nid)."
+      - name: "vid"
+        type: "int(10) unsigned"
+        description: "Version ID (primary key)."
+      - name: "uid"
+        type: "int(10) unsigned"
+        description: "Author user ID."
+      - name: "title"
+        type: "varchar(255)"
+        description: "Revision title."
+      - name: "body"
+        type: "longtext"
+        description: "Main content body (HTML)."
+      - name: "teaser"
+        type: "longtext"
+        description: "Content teaser."
+      - name: "log"
+        type: "longtext"
+        description: "Revision log."
+      - name: "timestamp"
+        type: "int(11)"
+        description: "Revision timestamp (Unix)."
+      - name: "format"
+        type: "int(11)"
+        description: "Text format."
+    relationships:
+      - type: "many-to-one"
+        target_table: "node"
+        on_column: "nid"
+        description: "Links back to the parent node."
+    notes:
+      - "CCK fields must join on the latest vid (not node.vid)."
+
+  - name: "content_type_heavenletters"
+    description: "CCK fields for heavenletter content type, including the publish number."
+    primary_key: "vid"
+    fields:
+      - name: "vid"
+        type: "int(10) unsigned"
+        description: "Version ID (foreign key to node_revisions.vid)."
+      - name: "nid"
+        type: "int(10) unsigned"
+        description: "Node ID (foreign key to node.nid)."
+      - name: "field_heavenletter__value"
+        type: "int(11)"
+        description: "Heavenletter publish number (e.g., 1240)."
+      - name: "field_heavenletter_number_nid"
+        type: "int(11)"
+        description: "Related node ID."
+      - name: "field_translated_by_uid"
+        type: "int(11)"
+        description: "Translator user ID."
+      - name: "field_proofed_value"
+        type: "longtext"
+        description: "Proofreading notes."
+      - name: "field_newsletter_sent_value"
+        type: "varchar(20)"
+        description: "Newsletter status."
+    relationships:
+      - type: "one-to-one"
+        target_table: "node_revisions"
+        on_column: "vid"
+        description: "Must join on latest vid for CCK data."
+    notes:
+      - "Critical for publish numbers; missing from original sync scripts."
+
+  - name: "content_field_published_date"
+    description: "CCK field for publication date."
+    primary_key: "vid"
+    fields:
+      - name: "vid"
+        type: "int(10) unsigned"
+        description: "Version ID."
+      - name: "nid"
+        type: "int(10) unsigned"
+        description: "Node ID."
+      - name: "field_published_date_value"
+        type: "varchar(20)"
+        description: "Publication date (ISO format, e.g., '2007-03-25T00:00:00')."
+    relationships:
+      - type: "one-to-one"
+        target_table: "node_revisions"
+        on_column: "vid"
+        description: "Optional CCK field."
+    notes:
+      - "Contains definitive publication dates."
+
+  - name: "content_field_date_written"
+    description: "CCK field for date written (often empty)."
+    primary_key: "vid"
+    fields:
+      - name: "vid"
+        type: "int(10) unsigned"
+        description: "Version ID."
+      - name: "nid"
+        type: "int(10) unsigned"
+        description: "Node ID."
+      - name: "field_date_written_value"
+        type: "varchar(20)"
+        description: "Date written (often empty)."
+    relationships:
+      - type: "one-to-one"
+        target_table: "node_revisions"
+        on_column: "vid"
+        description: "Optional CCK field."
+    notes:
+      - "Sample data is empty; may be unused."
+
+  - name: "localizernode"
+    description: "Maps node IDs to languages for localization."
+    primary_key: "nid"
+    fields:
+      - name: "nid"
+        type: "int(10) unsigned"
+        description: "Node ID."
+      - name: "locale"
+        type: "varchar(12)"
+        description: "Language code (e.g., 'eng' for English)."
+      - name: "pid"
+        type: "int(10) unsigned"
+        description: "Parent node ID for translations."
+    relationships:
+      - type: "one-to-one"
+        target_table: "node"
+        on_column: "nid"
+        description: "Links nodes to their language."
+    notes:
+      - "Use INNER JOIN with locale='eng' for English Heavenletters."
+
+  - name: "url_alias"
+    description: "Stores URL path mappings for SEO-friendly URLs."
+    primary_key: "pid"
+    fields:
+      - name: "pid"
+        type: "int(10) unsigned"
+        description: "Alias ID."
+      - name: "src"
+        type: "varchar(128)"
+        description: "Source path (e.g., 'node/123')."
+      - name: "dst"
+        type: "varchar(128)"
+        description: "Destination path (SEO-friendly)."
+    relationships:
+      - type: "one-to-one"
+        target_table: "node"
+        on_column: "nid (parsed from src)"
+        description: "Parsable from src column."
+    notes:
+      - "Extract nid from 'node/{nid}' in src."
+
+queries:
+  - name: "get_latest_english_heavenletters"
+    description: "Retrieves the latest revision of published English Heavenletters, including CCK fields."
+    sql: |
+      SELECT
+        nr.title,
+        nr.body,
+        cth.field_heavenletter__value AS publishNumber,
+        cpd.field_published_date_value AS publishedOn
+      FROM
+        node n
+      INNER JOIN localizernode ln ON n.nid = ln.nid AND ln.locale = 'eng'
+      INNER JOIN (SELECT nid, MAX(vid) AS max_vid FROM node_revisions GROUP BY nid) AS max_rev ON n.nid = max_rev.nid
+      INNER JOIN node_revisions nr ON max_rev.max_vid = nr.vid
+      LEFT JOIN content_type_heavenletters cth ON nr.vid = cth.vid
+      LEFT JOIN content_field_published_date cpd ON nr.vid = cpd.vid
+      WHERE n.type = 'heavenletters' AND n.status = 1
+      ORDER BY COALESCE(cth.field_heavenletter__value, n.nid) ASC
+      LIMIT ? OFFSET ?;
+
+  - name: "count_total_heavenletters"
+    description: "Counts total published English Heavenletters."
+    sql: |
+      SELECT COUNT(*) AS total
+      FROM node n
+      INNER JOIN localizernode ln ON n.nid = ln.nid AND ln.locale = 'eng'
+      WHERE n.type = 'heavenletters' AND n.status = 1;
+
+gotchas:
+  - "Content type must be 'heavenletters' (not 'heavenletter')."
+  - "Join CCK tables on node_revisions.vid (latest revision), not node.vid."
+  - "Use localizernode for language filtering; node.language is unreliable."
+  - "Publish numbers are in content_type_heavenletters.field_heavenletter__value."
+  - "Dates may be NULL; fallback to node.created/node.changed."
+  - "Working directory matters for scripts; run from project root."

@@ -6,7 +6,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # Environment variables
-.env
+*.env
 .env.local
 .env.development.local
 .env.test.local
@@ -16,6 +16,9 @@ yarn-error.log*
 *.db
 *.sqlite
 *.sqlite3
+*.csv
+*.sql
+*.json
 
 # IDE files
 .vscode/
@@ -36,6 +39,7 @@ dist/
 build/
 .next/
 out/
+listmonk_docs/
 
 # Sensitive files
 explore-db.js
@@ -47,6 +51,9 @@ inspect-database.js
 test-*
 *.backup
 
+# Reports
+*_report.md
+*_analysis.md
 # Keystone
 .keystone/
 

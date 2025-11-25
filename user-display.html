@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heavenletters Team | User Directory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Open+Sans:wght@400;600;700&family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles and custom properties from design system */
+        :root {
+            /* Primary Colors - Pink Rose Palette */
+            --color-rose-primary: #f4406b;
+            --color-rose-light: #fc95bd;
+            --color-rose-deep: #c90a2c;
+            --color-rose-accent: #ba1d53;
+
+            /* Sky Blue Palette - Calming & Uplifting */
+            --color-sky-primary: #53ade0;
+            --color-sky-deep: #1d7ab0;
+            --color-sky-light: #b8ddf2;
+            --color-sky-medium: #2595d6;
+            --color-sky-soft: #91cbeb;
+
+            /* Gold Palette - Warmth & Divine Light */
+            --color-gold-primary: #e9e55f;
+            --color-gold-warm: #f9f0d9;
+            --color-gold-metallic: #d4af37;
+            --color-gold-soft: #f2e8c9;
+
+            /* Neutral Colors */
+            --color-cream: #f9f0d9;
+            --color-beige: #b7b2a3;
+            --color-white: #ffffff;
+            --color-charcoal: #403f3e;
+        }
+
+        body {
+            font-family: 'Lexend', 'Open Sans', sans-serif;
+            background-color: var(--color-cream);
+            color: var(--color-charcoal);
+        }
+
+        h1, h2, h3, h4, h5, h6, .font-serif {
+            font-family: 'EB Garamond', 'Old Standard TT', serif;
+        }
+
+        /* Card flip animation */
+        .card-container {
+            perspective: 1000px;
+            height: 300px;
+        }
+
+        .card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 1rem;
+            border: 2px solid var(--color-beige);
+            background: white;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .card:hover .card-front,
+        .card:hover .card-back {
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            text-align: left;
+            overflow-y: auto;
+        }
+
+        /* Expand symbol */
+        .expand-symbol {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background-color: var(--color-rose-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .expand-symbol {
+            transform: scale(1.1);
+        }
+
+        /* Profile picture styles */
+        .profile-picture {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--color-rose-light);
+            margin-bottom: 1rem;
+        }
+
+        .profile-picture-placeholder {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-sky-light), var(--color-rose-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+            color: var(--color-white);
+        }
+
+        /* Role badge styles */
+        .role-badge {
+            background-color: var(--color-sky-primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin: 0.25rem;
+            display: inline-block;
+        }
+
+        /* Data field styles */
+        .data-field {
+            margin-bottom: 0.75rem;
+        }
+
+        .data-label {
+            font-weight: 600;
+            color: var(--color-rose-primary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .data-value {
+            color: var(--color-charcoal);
+            font-size: 0.875rem;
+            word-break: break-word;
+        }
+
+        /* Grid responsive */
+        .user-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        @media (max-width: 640px) {
+            .user-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding: 1rem;
+            }
+        }
+
+        /* Header styles */
+        .page-header {
+            background: linear-gradient(135deg, var(--color-sky-light), var(--color-gold-warm));
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 3px solid var(--color-beige);
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--color-charcoal);
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .page-header p {
+            font-size: 1.25rem;
+            color: var(--color-charcoal);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Statistics */
+        .stats {
+            background: white;
+            border-radius: 1rem;
+            border: 2px solid var(--color-beige);
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .stat-item {
+            display: inline-block;
+            margin: 1rem 2rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--color-rose-primary);
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--color-charcoal);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    </style>
+    <script>
+        // Custom Tailwind config providing direct hex values
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'rose-primary': '#f4406b',
+                        'rose-light': '#fc95bd',
+                        'rose-deep': '#c90a2c',
+                        'rose-accent': '#ba1d53',
+                        'sky-primary': '#53ade0',
+                        'sky-deep': '#1d7ab0',
+                        'sky-light': '#b8ddf2',
+                        'sky-medium': '#2595d6',
+                        'sky-soft': '#91cbeb',
+                        'gold-primary': '#e9e55f',
+                        'gold-warm': '#f9f0d9',
+                        'gold-metallic': '#d4af37',
+                        'gold-soft': '#f2e8c9',
+                        'cream': '#f9f0d9',
+                        'beige': '#b7b2a3',
+                        'charcoal': '#403f3e',
+                    },
+                    fontFamily: {
+                        'serif': ['EB Garamond', 'Old Standard TT', 'serif'],
+                        'sans': ['Lexend', 'Open Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-cream antialiased">
+    <!-- Header -->
+    <header class="page-header">
+        <h1 class="font-serif">Heavenletters Team Directory</h1>
+        <p>Discover the hearts and hands behind our mission of quiet connection with God. Each team member brings their unique gifts to serve our global community.</p>
+    </header>
+
+    <!-- Statistics -->
+    <div class="stats">
+        <div class="stat-item">
+            <span class="stat-number" id="totalUsers">102</span>
+            <span class="stat-label">Team Members</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number" id="usersWithPictures">39</span>
+            <span class="stat-label">With Photos</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">5</span>
+            <span class="stat-label">Role Types</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">20+</span>
+            <span class="stat-label">Years of Service</span>
+        </div>
+    </div>
+
+    <!-- User Grid -->
+    <main class="user-grid" id="userGrid">
+        <!-- Users will be dynamically inserted here -->
+    </main>
+
+    <script>
+        // Complete user data from the JSON file (first 30 users for demonstration)
+        const userData = {
+            "metadata": {
+                "query_timestamp": "2025-11-17T16:11:54.745Z",
+                "target_role_ids": [4, 5, 6, 7, 8],
+                "database_host": "10.163.126.26",
+                "database_name": "heaven",
+                "total_users": 102,
+                "users_with_pictures": 39,
+                "database_type": "Drupal 5 (MariaDB)",
+                "script_version": "1.2 (Fixed Picture Paths)"
+            },
+            "users": [
+                {
+                    "uid": 2,
+                    "username": "Santhan",
+                    "email": "santhan@khanyi.com",
+                    "status": 1,
+                    "created": "2005-07-25T13:34:20.000Z",
+                    "last_access": "2009-02-03T07:04:05.000Z",
+                    "last_login": "2009-02-02T21:04:28.000Z",
+                    "picture_path": "heaven/pictures/picture-2.jpg",
+                    "picture_mime": "image/jpeg",
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "",
+                    "signature": "",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "santhan@khanyi.com",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                },
+                {
+                    "uid": 5,
+                    "username": "Gloria Wendroff",
+                    "email": "gloria@heavenletters.org",
+                    "status": 1,
+                    "created": "2005-08-04T16:27:52.000Z",
+                    "last_access": "2019-03-07T11:37:45.000Z",
+                    "last_login": "2019-03-07T11:20:23.000Z",
+                    "picture_path": "heaven/pictures/picture-5.jpg",
+                    "picture_mime": "image/jpeg",
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "UTC",
+                    "signature": "Founder of Heavenletters",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "gloria@heavenletters.org",
+                    "roles": [
+                        {"role_id": 4, "role_name": "Translator"},
+                        {"role_id": 5, "role_name": "Forum Moderator"},
+                        {"role_id": 6, "role_name": "Editor"},
+                        {"role_id": 7, "role_name": "datacapture"},
+                        {"role_id": 8, "role_name": "community manager"}
+                    ]
+                },
+                {
+                    "uid": 25,
+                    "username": "Kirt",
+                    "email": "kirtmccurdy@yahoo.com",
+                    "status": 1,
+                    "created": "2005-08-28T03:55:17.000Z",
+                    "last_access": "2010-09-26T01:55:53.000Z",
+                    "last_login": "2010-09-26T00:09:04.000Z",
+                    "picture_path": "heaven/pictures/picture-25.gif",
+                    "picture_mime": "image/gif",
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "-21600",
+                    "timezone_name": "America/Denver",
+                    "signature": "Heavenletters Translator",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "kirtmccurdy@yahoo.com",
+                    "roles": [
+                        {"role_id": 4, "role_name": "Translator"},
+                        {"role_id": 5, "role_name": "Forum Moderator"},
+                        {"role_id": 6, "role_name": "Editor"},
+                        {"role_id": 7, "role_name": "datacapture"}
+                    ]
+                },
+                {
+                    "uid": 77,
+                    "username": "WunLuv",
+                    "email": "santhan@mojahmedia.net",
+                    "status": 1,
+                    "created": "2005-09-18T22:32:50.000Z",
+                    "last_access": "2022-12-12T21:11:27.000Z",
+                    "last_login": "2022-12-12T20:37:45.000Z",
+                    "picture_path": "sites/heavenletters.org/sites/heavenletters.org/files/pictures/picture-77.jpg",
+                    "picture_mime": "image/jpeg",
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "UTC",
+                    "signature": "Love All, Serve All\\nBe Good, Do Good",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "santhan@mojahmedia.net",
+                    "roles": [
+                        {"role_id": 4, "role_name": "Translator"},
+                        {"role_id": 6, "role_name": "Editor"}
+                    ]
+                },
+                {
+                    "uid": 93,
+                    "username": "paula",
+                    "email": "giovannantonio.forabosco@fastwebnet.it",
+                    "status": 1,
+                    "created": "2005-10-04T15:15:50.000Z",
+                    "last_access": "2022-06-29T05:46:14.000Z",
+                    "last_login": "2022-06-28T06:14:52.000Z",
+                    "picture_path": "",
+                    "picture_mime": null,
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "UTC",
+                    "signature": "Never think that you are I. Know that I am you. /HEAVEN #515)",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "g.forabosco@tin.it",
+                    "roles": [
+                        {"role_id": 4, "role_name": "Translator"},
+                        {"role_id": 7, "role_name": "datacapture"}
+                    ]
+                },
+                {
+                    "uid": 193,
+                    "username": "Engin Zeyno Vural",
+                    "email": "engin_vural@yahoo.com",
+                    "status": 1,
+                    "created": "2006-01-08T08:21:54.000Z",
+                    "last_access": "2014-05-26T08:13:58.000Z",
+                    "last_login": "2014-05-26T08:11:18.000Z",
+                    "picture_path": "",
+                    "picture_mime": null,
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "UTC",
+                    "signature": "ENGIN",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "engin_vural@yahoo.com",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                },
+                {
+                    "uid": 254,
+                    "username": "Margod-Greece",
+                    "email": "santorinh@gmail.com",
+                    "status": 1,
+                    "created": "2006-06-08T10:42:43.000Z",
+                    "last_access": "2008-02-13T19:13:06.000Z",
+                    "last_login": "2008-02-13T00:38:32.000Z",
+                    "picture_path": "sites/heavenletters.org/sites/heavenletters.org/files/pictures/picture-254.jpg",
+                    "picture_mime": "image/jpeg",
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "-21600",
+                    "timezone_name": "America/Chicago",
+                    "signature": "This game seems so real!",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "santorinh@gmail.com",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                },
+                {
+                    "uid": 257,
+                    "username": "leen",
+                    "email": "info@reikileen.be",
+                    "status": 1,
+                    "created": "2006-06-17T17:04:30.000Z",
+                    "last_access": "2010-02-26T08:45:38.000Z",
+                    "last_login": "2010-02-25T08:19:35.000Z",
+                    "picture_path": "heaven/pictures/picture-257.jpg",
+                    "picture_mime": "image/jpeg",
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "UTC",
+                    "signature": "May God bless you, always,\\nleen",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "info@reikileen.be",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                },
+                {
+                    "uid": 318,
+                    "username": "Berit",
+                    "email": "saimoon108@gmail.com",
+                    "status": 1,
+                    "created": "2006-11-17T20:15:04.000Z",
+                    "last_access": "2023-06-02T17:01:14.000Z",
+                    "last_login": "2023-06-02T16:32:38.000Z",
+                    "picture_path": "sites/heavenletters.org/files/pictures/picture-318.png",
+                    "picture_mime": "image/png",
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "UTC",
+                    "signature": "Order Processing",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "bdelaini@fastwebnet.it",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                },
+                {
+                    "uid": 397,
+                    "username": "Margarita",
+                    "email": "cmcb@itelgua.com",
+                    "status": 1,
+                    "created": "2007-03-03T17:33:19.000Z",
+                    "last_access": "2007-05-29T13:54:21.000Z",
+                    "last_login": "2007-05-27T14:01:15.000Z",
+                    "picture_path": "",
+                    "picture_mime": null,
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "",
+                    "signature": "",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "cmcb@itelgua.com",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                },
+                {
+                    "uid": 413,
+                    "username": "Adrachin",
+                    "email": "adrachin@gmx.org",
+                    "status": 1,
+                    "created": "2007-03-30T02:32:15.000Z",
+                    "last_access": "2020-05-07T05:06:05.000Z",
+                    "last_login": "2020-05-06T23:12:55.000Z",
+                    "picture_path": "heaven/pictures/picture-413.jpg",
+                    "picture_mime": "image/jpeg",
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "7200",
+                    "timezone_name": "Europe/Berlin",
+                    "signature": "Forum Moderator",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "adrachin@swipp.de",
+                    "roles": [{"role_id": 5, "role_name": "Forum Moderator"}]
+                },
+                {
+                    "uid": 415,
+                    "username": "stefan1008",
+                    "email": "sgracher1008@yahoo.com.mx",
+                    "status": 1,
+                    "created": "2007-04-19T07:24:49.000Z",
+                    "last_access": "2012-11-14T08:46:17.000Z",
+                    "last_login": "2012-10-22T19:39:55.000Z",
+                    "picture_path": "",
+                    "picture_mime": null,
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "UTC",
+                    "signature": "",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "sgracher1008@yahoo.com.mx",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                },
+                {
+                    "uid": 1975,
+                    "username": "Pablo Vaudagna",
+                    "email": "pablo@mojahmedia.net",
+                    "status": 1,
+                    "created": "2007-04-30T21:34:05.000Z",
+                    "last_access": "2009-02-04T20:06:34.000Z",
+                    "last_login": "2009-02-04T20:04:02.000Z",
+                    "picture_path": "heaven/pictures/picture-1975.jpg",
+                    "picture_mime": "image/jpeg",
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "-18000",
+                    "timezone_name": "",
+                    "signature": "",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "pablo@mojahmedia.net",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                },
+                {
+                    "uid": 3353,
+                    "username": "Cecilia R",
+                    "email": "cecilia@mojahmedia.net",
+                    "status": 1,
+                    "created": "2007-05-01T14:17:12.000Z",
+                    "last_access": "2010-06-23T02:34:47.000Z",
+                    "last_login": "2010-06-22T17:48:07.000Z",
+                    "picture_path": "",
+                    "picture_mime": null,
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "UTC",
+                    "signature": "",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "cecilia@mojahmedia.net",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                },
+                {
+                    "uid": 3361,
+                    "username": "Copito",
+                    "email": "copitopaz@hotmail.com",
+                    "status": 1,
+                    "created": "2007-05-20T22:03:08.000Z",
+                    "last_access": "2007-06-20T01:17:50.000Z",
+                    "last_login": "2007-06-17T19:18:59.000Z",
+                    "picture_path": "sites/heavenletters.org/sites/heavenletters.org/files/pictures/picture-3361.jpg",
+                    "picture_mime": "image/jpeg",
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "",
+                    "signature": "",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "copitopaz@hotmail.com",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                },
+                {
+                    "uid": 3390,
+                    "username": "Margaretha",
+                    "email": "margaretha.aase@gmail.com",
+                    "status": 1,
+                    "created": "2007-07-27T11:05:46.000Z",
+                    "last_access": "2010-01-18T20:40:10.000Z",
+                    "last_login": "2010-01-17T20:26:55.000Z",
+                    "picture_path": "",
+                    "picture_mime": null,
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "UTC",
+                    "signature": "",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "margaretha.aase@gmail.com",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                },
+                {
+                    "uid": 3446,
+                    "username": "Dreamhealer",
+                    "email": "lulu.reikiluz@gmail.com",
+                    "status": 1,
+                    "created": "2007-10-29T18:56:03.000Z",
+                    "last_access": "2013-11-18T03:27:51.000Z",
+                    "last_login": "2013-11-18T03:18:52.000Z",
+                    "picture_path": "sites/heavenletters.org/files/pictures/picture-3446.jpg",
+                    "picture_mime": "image/jpeg",
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "es",
+                    "timezone": "-21600",
+                    "timezone_name": "America/Mexico_City",
+                    "signature": "Lourdes Mendez",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "lulu.reikiluz@gmail.com",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                },
+                {
+                    "uid": 3455,
+                    "username": "Anca",
+                    "email": "anca.dinaci@yahoo.com",
+                    "status": 1,
+                    "created": "2007-11-08T21:38:51.000Z",
+                    "last_access": "2023-10-18T10:44:39.000Z",
+                    "last_login": "2023-10-18T10:15:51.000Z",
+                    "picture_path": "heaven/pictures/picture-3455.jpg",
+                    "picture_mime": "image/jpeg",
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "7200",
+                    "timezone_name": "Africa/Johannesburg",
+                    "signature": "",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "anca.dinaci@yahoo.com",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                },
+                {
+                    "uid": 3469,
+                    "username": "Spirit-translator",
+                    "email": "light@mysticalpath.com",
+                    "status": 1,
+                    "created": "2007-12-02T14:12:42.000Z",
+                    "last_access": "2013-05-14T19:23:23.000Z",
+                    "last_login": "2013-05-14T19:09:57.000Z",
+                    "picture_path": "",
+                    "picture_mime": null,
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "UTC",
+                    "signature": "Ana",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "light@mysticalpath.com",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                },
+                {
+                    "uid": 3474,
+                    "username": "Cédric",
+                    "email": "ceolien@gmail.com",
+                    "status": 1,
+                    "created": "2007-12-10T10:16:05.000Z",
+                    "last_access": "2008-07-12T11:47:30.000Z",
+                    "last_login": "2008-07-12T11:26:58.000Z",
+                    "picture_path": "heaven/pictures/picture-3474.jpg",
+                    "picture_mime": "image/jpeg",
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "",
+                    "signature": "Oh my God !",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "ceolien@gmail.com",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                },
+                {
+                    "uid": 3488,
+                    "username": "Lynn-and-Lizz",
+                    "email": "c.v.d@gmx.net",
+                    "status": 1,
+                    "created": "2007-12-27T17:40:26.000Z",
+                    "last_access": "2008-03-18T18:07:52.000Z",
+                    "last_login": "2008-03-18T12:22:21.000Z",
+                    "picture_path": "",
+                    "picture_mime": null,
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "3600",
+                    "timezone_name": "",
+                    "signature": "If you think you are too small to be effective,\\nyou have never been in bed with a mosquito.\\nBetty Reese",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "c.v.d@gmx.net",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                },
+                {
+                    "uid": 3491,
+                    "username": "Alexiis",
+                    "email": "alexiis@sion.com",
+                    "status": 1,
+                    "created": "2007-12-31T01:40:42.000Z",
+                    "last_access": "2008-04-18T12:17:13.000Z",
+                    "last_login": "2008-04-18T10:53:05.000Z",
+                    "picture_path": "",
+                    "picture_mime": null,
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "",
+                    "signature": "",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "alexiis@sion.com",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                },
+                {
+                    "uid": 3526,
+                    "username": "Nomvula",
+                    "email": "nomvula@mojahmedia.net",
+                    "status": 1,
+                    "created": "2008-02-03T08:47:42.000Z",
+                    "last_access": "2011-04-01T11:19:26.000Z",
+                    "last_login": "2011-04-01T11:13:43.000Z",
+                    "picture_path": "",
+                    "picture_mime": null,
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "UTC",
+                    "signature": "Organic love,\\nNomvula\\n",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "nomvula9@gmail.com",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                },
+                {
+                    "uid": 3539,
+                    "username": "Daniela",
+                    "email": "ascenddani@gmail.com",
+                    "status": 1,
+                    "created": "2008-02-14T16:53:22.000Z",
+                    "last_access": "2012-03-28T09:41:45.000Z",
+                    "last_login": "2012-03-26T11:15:21.000Z",
+                    "picture_path": "heaven/pictures/picture-3539.jpg",
+                    "picture_mime": "image/jpeg",
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "UTC",
+                    "signature": "Daniela",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "dknapic@pu.t-com.hr",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                },
+                {
+                    "uid": 3540,
+                    "username": "Moderator 1",
+                    "email": "moderator1@heavenletters.org",
+                    "status": 1,
+                    "created": "2008-02-15T07:18:34.000Z",
+                    "last_access": "2008-03-24T20:45:08.000Z",
+                    "last_login": "2008-03-24T20:44:42.000Z",
+                    "picture_path": "",
+                    "picture_mime": null,
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "",
+                    "signature": "",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "moderator1@heavenletters.org",
+                    "roles": [{"role_id": 5, "role_name": "Forum Moderator"}]
+                },
+                {
+                    "uid": 3550,
+                    "username": "Moderator 3",
+                    "email": "moderator3@heavenletters.org",
+                    "status": 1,
+                    "created": "2008-02-26T15:55:21.000Z",
+                    "last_access": "2008-03-24T16:46:22.000Z",
+                    "last_login": "2008-03-24T16:45:26.000Z",
+                    "picture_path": "",
+                    "picture_mime": null,
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "",
+                    "signature": "",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "gloriawendroff@gmail.com",
+                    "roles": [{"role_id": 5, "role_name": "Forum Moderator"}]
+                },
+                {
+                    "uid": 3552,
+                    "username": "Moderator 2",
+                    "email": "moderator2@heavenletters.org",
+                    "status": 1,
+                    "created": "2008-02-26T19:00:53.000Z",
+                    "last_access": "2008-03-24T16:55:42.000Z",
+                    "last_login": "2008-03-24T16:47:44.000Z",
+                    "picture_path": "",
+                    "picture_mime": null,
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "",
+                    "timezone": null,
+                    "timezone_name": "",
+                    "signature": "",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "moderator2@heavenletters.org",
+                    "roles": [{"role_id": 5, "role_name": "Forum Moderator"}]
+                },
+                {
+                    "uid": 3559,
+                    "username": "theophil",
+                    "email": "theophil.balz@icloud.com",
+                    "status": 1,
+                    "created": "2008-03-13T09:37:46.000Z",
+                    "last_access": "2025-09-10T16:21:07.000Z",
+                    "last_login": "2025-09-10T16:20:54.000Z",
+                    "picture_path": "",
+                    "picture_mime": null,
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "UTC",
+                    "signature": "",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "theophil.balz@web.de",
+                    "roles": [
+                        {"role_id": 4, "role_name": "Translator"},
+                        {"role_id": 6, "role_name": "Editor"}
+                    ]
+                },
+                {
+                    "uid": 3565,
+                    "username": "Vera",
+                    "email": "veracorrea46@ig.com.br",
+                    "status": 1,
+                    "created": "2008-03-26T19:18:30.000Z",
+                    "last_access": "2013-01-28T16:55:02.000Z",
+                    "last_login": "2013-01-28T16:52:05.000Z",
+                    "picture_path": "",
+                    "picture_mime": null,
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "UTC",
+                    "signature": "Vera Corrêa",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "veracorrea46@ig.com.br",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                },
+                {
+                    "uid": 3669,
+                    "username": "ancoterpstra",
+                    "email": "AncoTerpstra@gmail.com",
+                    "status": 1,
+                    "created": "2008-08-25T17:38:44.000Z",
+                    "last_access": "2011-04-17T16:00:12.000Z",
+                    "last_login": "2011-04-17T15:56:09.000Z",
+                    "picture_path": "",
+                    "picture_mime": null,
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "7200",
+                    "timezone_name": "Europe/Amsterdam",
+                    "signature": "",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "AncoTerpstra@gmail.com",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                },
+                {
+                    "uid": 3680,
+                    "username": "Seraph",
+                    "email": "saschac66@yahoo.com",
+                    "status": 1,
+                    "created": "2008-09-11T07:59:06.000Z",
+                    "last_access": "2012-04-22T00:54:19.000Z",
+                    "last_login": "2012-04-21T20:43:06.000Z",
+                    "picture_path": "",
+                    "picture_mime": null,
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "UTC",
+                    "signature": "Heavenletters carried me through the tight places when I could not carry myself",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "saschac66@yahoo.com",
+                    "roles": [{"role_id": 5, "role_name": "Forum Moderator"}]
+                },
+                {
+                    "uid": 3716,
+                    "username": "maria-luz",
+                    "email": "maria.luz.martin@fluor.com",
+                    "status": 1,
+                    "created": "2008-11-11T15:08:41.000Z",
+                    "last_access": "2013-06-04T21:44:01.000Z",
+                    "last_login": "2013-06-03T19:33:04.000Z",
+                    "picture_path": "heaven/pictures/picture-3716.jpg",
+                    "picture_mime": "image/jpeg",
+                    "picture_size": null,
+                    "theme": "",
+                    "language": "eng",
+                    "timezone": "0",
+                    "timezone_name": "UTC",
+                    "signature": " I came to this world  in order to serve with patience working for the light and universal love\\n\\n Luz",
+                    "mode": 0,
+                    "sort": 0,
+                    "threshold": 0,
+                    "init": "maria.luz.martin@fluor.com",
+                    "roles": [{"role_id": 4, "role_name": "Translator"}]
+                }
+            ]
+        };
+
+        // Helper function to format dates
+        function formatDate(dateString) {
+            if (!dateString) return 'Never';
+            return new Date(dateString).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Helper function to get initials for placeholder
+        function getInitials(name) {
+            return name
+                .split(' ')
+                .map(word => word.charAt(0))
+                .join('')
+                .substring(0, 2)
+                .toUpperCase();
+        }
+
+        // Function to create a user card
+        function createUserCard(user) {
+            const roles = user.roles.map(role =>
+                `<span class="role-badge">${role.role_name}</span>`
+            ).join('');
+
+            const profilePicture = user.picture_path ?
+                `<img src="${user.picture_path}" alt="${user.username}" class="profile-picture" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                 <div class="profile-picture-placeholder" style="display: none;">${getInitials(user.username)}</div>` :
+                `<div class="profile-picture-placeholder">${getInitials(user.username)}</div>`;
+
+            return `
+                <div class="card-container">
+                    <div class="card">
+                        <div class="card-front">
+                            <div class="expand-symbol">+</div>
+                            ${profilePicture}
+                            <h3 class="font-serif text-xl font-bold text-charcoal mb-2">${user.username}</h3>
+                            <p class="text-charcoal/70 text-sm mb-3">${user.email}</p>
+                            <div class="flex flex-wrap justify-center">
+                                ${roles}
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <h3 class="font-serif text-xl font-bold text-charcoal mb-4">${user.username}</h3>
+
+                            <div class="data-field">
+                                <div class="data-label">Email</div>
+                                <div class="data-value">${user.email}</div>
+                            </div>
+
+                            <div class="data-field">
+                                <div class="data-label">Roles</div>
+                                <div class="flex flex-wrap">${roles}</div>
+                            </div>
+
+                            <div class="data-field">
+                                <div class="data-label">Member Since</div>
+                                <div class="data-value">${formatDate(user.created)}</div>
+                            </div>
+
+                            <div class="data-field">
+                                <div class="data-label">Last Login</div>
+                                <div class="data-value">${formatDate(user.last_login)}</div>
+                            </div>
+
+                            <div class="data-field">
+                                <div class="data-label">Last Access</div>
+                                <div class="data-value">${formatDate(user.last_access)}</div>
+                            </div>
+
+                            <div class="data-field">
+                                <div class="data-label">Language</div>
+                                <div class="data-value">${user.language || 'Not specified'}</div>
+                            </div>
+
+                            <div class="data-field">
+                                <div class="data-label">Timezone</div>
+                                <div class="data-value">${user.timezone_name || 'Not specified'}</div>
+                            </div>
+
+                            ${user.signature ? `
+                            <div class="data-field">
+                                <div class="data-label">Signature</div>
+                                <div class="data-value">${user.signature}</div>
+                            </div>
+                            ` : ''}
+
+                            <div class="data-field">
+                                <div class="data-label">Status</div>
+                                <div class="data-value">${user.status === 1 ? 'Active' : 'Inactive'}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Function to render all user cards
+        function renderUsers() {
+            const userGrid = document.getElementById('userGrid');
+            userGrid.innerHTML = userData.users.map(createUserCard).join('');
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderUsers();
+        });
+    </script>
+</body>
+</html>

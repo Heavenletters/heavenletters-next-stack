@@ -1,0 +1,24 @@
+#Builds the node container for hosting the Astrojs frontend
+services:
+  astro:
+    image: node:20-alpine  # Use Node.js version 20
+    container_name: astro_oneplusone
+    restart: unless-stopped
+    working_dir: /var/www/public/oneplusone/front
+    #Use pnpm as the package manager
+    command: /bin/sh -c "apk add curl && curl -L https://unpkg.com/@pnpm/self-installer | node && pnpm install && pnpm run build && pnpm start"
+    env_file:
+      - /var/www/public/oneplusone/front/.env
+    volumes:
+    #mounts the AstroJS app directory
+      - /var/www/public/oneplusone/front:/var/www/public/oneplusone/front  # Mount Astro app directory
+    #mounts the Ghost images directory which gives Astro images module access to Ghost images
+      - /var/www/public/oneplusone/ghost/images:/var/www/public/oneplusone/front/images:ro # Mount Ghost images directory
+    ports:
+      - "4321:4321"  # Expose the AstroJS app on port 4321
+    networks:
+      - backend  # Use the shared backend network
+
+networks:
+  backend:
+    external: true  # Use the existing backend network

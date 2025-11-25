@@ -1,0 +1,267 @@
+/**
+ * Convert template ID=6 from campaign to transactional type
+ */
+import axios from 'axios';
+
+const api = axios.create({
+    baseURL: 'https://mailer.heavenletters.org',
+    auth: {
+        username: 'bounce',
+        password: 'fXoO3F6Vn2CrkZndwThZjA6xz3XWiJLn',
+    },
+});
+
+const convertTemplate = async () => {
+    const payload = {
+        name: "Daily Heavenletter",
+        type: "tx",
+        subject: "Daily Heavenletter: {{ .Tx.Data.title }}",
+        body: `<!doctype html>
+<html>
+    <head>
+        <title>Daily Heavenletter: {{.title}}</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+        <base target="_blank">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
+        <style>
+            body {
+                background-color: #f9f0d9;
+                font-family: 'Lexend', 'Open Sans', sans-serif;
+                font-size: 18px;
+                line-height: 1.75;
+                margin: 0;
+                color: #403f3e;
+                padding: 32px 0;
+            }
+
+            .wrap {
+                background-color: #ffffff;
+                max-width: 600px;
+                margin: 0 auto;
+                border-radius: 8px;
+                overflow: hidden;
+                border: 1px solid #b7b2a3;
+            }
+
+            .header {
+                text-align: center;
+                padding: 32px;
+                background-color: #ffffff;
+            }
+
+            .header img {
+                max-width: 250px;
+                height: auto;
+            }
+
+            .subheading {
+                font-family: 'EB Garamond', 'Old Standard TT', serif;
+                font-style: italic;
+                font-size: 18px;
+                color: #403f3e;
+                text-align: center;
+                margin-top: 8px;
+            }
+
+            .content {
+                padding: 0 32px 32px;
+            }
+
+            .content h3 {
+                font-family: 'EB Garamond', 'Old Standard TT', serif;
+                font-size: 24px;
+                font-weight: 700;
+                color: #403f3e;
+                margin: 32px 0 24px 0;
+                text-align: center;
+                line-height: 1.3;
+            }
+
+            .content p {
+                margin: 0 0 24px 0;
+                color: #403f3e;
+            }
+
+            .blockquote {
+                font-family: 'EB Garamond', 'Old Standard TT', serif;
+                font-size: 22px;
+                color: #403f3e;
+                border-left: 4px solid #f4406b;
+                padding-left: 24px;
+                margin: 32px 0;
+            }
+
+            .cta-cards {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 16px;
+                justify-content: center;
+                margin: 32px 0;
+            }
+
+            .card {
+                background-color: #f9f0d9;
+                border: 1px solid #b7b2a3;
+                border-radius: 8px;
+                padding: 24px;
+                text-align: center;
+                width: 100%;
+                max-width: 250px;
+            }
+
+            .card h4 {
+                font-family: 'EB Garamond', 'Old Standard TT', serif;
+                font-size: 20px;
+                font-weight: 700;
+                margin: 0 0 16px 0;
+            }
+
+            .card-subtext {
+                font-size: 16px;
+                margin: 16px 0 0 0;
+                line-height: 1.4;
+            }
+
+            .button {
+                background-color: #f4406b;
+                border-radius: 8px;
+                text-decoration: none !important;
+                color: #ffffff !important;
+                font-weight: 600;
+                font-family: 'Lexend', 'Open Sans', sans-serif;
+                padding: 12px 24px;
+                display: inline-block;
+                text-align: center;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+            }
+
+            .button:hover {
+                background-color: #d13256;
+                box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+                transform: translateY(-1px);
+            }
+
+            .footer {
+                text-align: center;
+                font-size: 12px;
+                color: #403f3e;
+                padding: 24px 32px;
+                background-color: #f9f0d9;
+            }
+                .footer img {
+                    max-width: 80px;
+                    height: auto;
+                    margin-bottom: 16px;
+                }
+                .footer a {
+                    color: #1d7ab0;
+                    text-decoration: underline;
+                    margin: 0 8px;
+                }
+
+            img {
+                max-width: 100%;
+                height: auto;
+            }
+
+            a {
+                color: #1d7ab0;
+                text-decoration: underline;
+                transition: color 0.3s ease;
+            }
+
+            a:hover {
+                color: #00008B;
+            }
+
+            .icon {
+                width: 18px;
+                height: 18px;
+                stroke: #f4406b;
+                stroke-width: 2;
+                fill: none;
+                vertical-align: middle;
+                margin-right: 8px;
+            }
+
+            ul.icon-list {
+                padding-left: 20px;
+                list-style: disc;
+                margin: 0 0 24px 0;
+            }
+            ul.icon-list li {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 6px 0;
+            }
+
+            @media screen and (max-width: 600px) {
+                body {
+                    padding: 16px 0;
+                }
+                .wrap {
+                    margin: 0 16px;
+                    border-radius: 0;
+                }
+                .content {
+                    padding: 0 24px 24px;
+                }
+                .header {
+                    padding: 24px;
+                }
+                .cta-cards {
+                    flex-direction: column;
+                    align-items: center;
+                }
+                .card {
+                    max-width: 100%;
+                }
+            }
+        </style>
+    </head>
+    <body style="background-color: #f9f0d9;font-family: 'Lexend', 'Open Sans', sans-serif;font-size: 18px;line-height: 1.75;margin: 0;color: #403f3e;padding: 32px 0;">
+    <div class="wrap" style="background-color: #ffffff;max-width: 600px;margin: 0 auto;border-radius: 8px;overflow: hidden;border: 1px solid #b7b2a3;">
+        <div class="header" style="text-align: center;padding: 32px;background-color: #ffffff;">
+            <img src="https://mailer.heavenletters.org/uploads/heaven_logo.png" alt="Heavenletters" style="max-width: 250px;height: auto;">
+            <p class="subheading" style="font-family: 'EB Garamond', 'Old Standard TT', serif;font-style: italic;font-size: 18px;color: #403f3e;text-align: center;margin-top: 8px;">Bringing Earth Closer to Heaven</p>
+        </div>
+        <div class="content" style="padding: 0 32px 32px;">
+            <h3>{{ .Tx.Data.title }}</h3>
+            <p><strong>Published on:</strong> {{ .Tx.Data.publishedOn }} | <strong>Publish Number:</strong> {{ .Tx.Data.publishNumber }}</p>
+            <p>{{ .Tx.Data.body }}</p>
+            <p><a href="https://heavenletters.org/{{ .Tx.Data.permalink }}">Read on website</a></p>
+        </div>
+
+    <div class="footer" style="text-align: center;font-size: 12px;color: #403f3e;padding: 24px 32px;background-color: #f2d793;">
+        <img src="https://mailer.heavenletters.org/uploads/heaven_standalone_logo.png" alt="Heavenletters" style="max-width: 80px;height: auto;margin-bottom: 16px;">
+        <p class="subheading" style="font-family: 'EB Garamond', 'Old Standard TT', serif;font-style: italic;font-size: 18px;color: #403f3e;text-align: center;margin-top: 8px;">Bringing Earth Closer to Heaven</p>
+        <p>
+            <a href="{{ UnsubscribeURL }}" style="color: #1d7ab0;text-decoration: underline;margin: 0 8px;">Unsubscribe</a>
+            &nbsp;&nbsp;
+            <a href="{{ MessageURL }}" style="color: #1d7ab0;text-decoration: underline;margin: 0 8px;">View in Browser</a>
+        </p>
+        <p style="margin-top: 16px;">The International Godwriting Society of Heavenletters  | International. <a href="https://heavenletters.org">heavenletters.org</a></p>
+    </div>
+</body>
+</html>`
+    };
+
+    try {
+        const response = await api.put('/api/templates/6', payload);
+        console.log('Template converted successfully!');
+        console.log('Template ID:', response.data.data.id);
+        console.log('Template type:', response.data.data.type);
+        console.log('Template subject:', response.data.data.subject);
+        return true;
+    } catch (error) {
+        console.error('Error converting template:', error.response ? error.response.data : error.message);
+        return false;
+    }
+};
+
+convertTemplate();

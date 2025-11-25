@@ -1,0 +1,171 @@
+services:
+# Nginx with Certbot for handling SSL and serving web content
+  nginx:
+    build:
+      context: ./nginx-certbot  # Path to your custom Dockerfile
+    container_name: nginx
+    restart: unless-stopped  # Restart the container automatically unless it is explicitly stopped
+    ports:
+      - "80:80"  # Expose HTTP port
+      - "443:443"  # Expose HTTPS port
+    volumes:
+      - /var/www/public:/var/www/public  # Mount public directory for web content
+      - /var/www/private/nginx/conf.d:/etc/nginx/conf.d  # Mount virtual host configuration files
+      - /var/www/private/nginx/ssl:/etc/letsencrypt  # Mount SSL certificates managed by Certbot
+      - /var/www/private/nginx/logs:/var/log/nginx  # Mount directory for Nginx logs
+      - /var/www/private/nginx/nginx.conf:/etc/nginx/nginx.conf:rw  # Mount the default nginx.conf file and make it writable for Certbot
+      - /var/www/private/nginx/mime.types:/etc/nginx/mime.types:rw  # Mount mime.types file and make it writable for Certbot
+
+    security_opt:
+      - apparmor=unconfined  # Disable AppArmor for this container to allow more flexibility
+    logging:
+      driver: journald  # Use systemd's journald for logging
+      options:
+        tag: "nginx"  # Tag the logs to easily identify them
+        mode: non-blocking  # Prevent the container from blocking if logging fails
+        max-buffer-size: "4m"  # Set a buffer size limit for log entries
+    networks:
+      - web  # Public-facing network for handling web traffic
+      - backend  # Backend network to connect with PHP services
+
+  # PostgreSQL Database Service
+  #postgres:
+  #  image: postgres:latest  # Use the latest version of PostgreSQL
+  #  container_name: postgres
+  #  restart: unless-stopped  # Restart the container automatically unless explicitly stopped
+  #  environment:
+  #    POSTGRES_USER: ${POSTGRES_USER}  # Set PostgreSQL username from environment variables
+  #    POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}  # Set PostgreSQL password from environment variables
+  #    POSTGRES_DB: ${POSTGRES_DB}  # Set PostgreSQL database name from environment variables
+  #  volumes:
+  #    - /var/www/private/postgre:/var/lib/postgresql/data  # Mount directory for persistent data storage
+  #  logging:
+  #    driver: journald
+  #    options:
+  #      tag: "postgres"  # Tag the logs to easily identify them
+  #      mode: non-blocking
+  #      max-buffer-size: "4m"
+  #  networks:
+  #    - backend  # Only accessible from backend services
+
+  # MYSQL Database Service
+  mysql:
+    image: mysql:8.0  # Use MySQL version 8.0
+    container_name: mysql
+    restart: unless-stopped  # Restart the container automatically unless explicitly stopped
+    environment:
+     #      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}  # Set MySQL root password from environment variables
+     #      MYSQL_DATABASE: ${MYSQL_DATABASE}  # Set initial MySQL database from environment variables
+     #  MYSQL_USER: ${MYSQL_USER}  # Set non-root MySQL user from environment variables
+     # MYSQL_PASSWORD: ${MYSQL_PASSWORD}  # Set password for non-root user from environment variables
+    volumes:
+      - /var/www/private/mysql:/var/lib/mysql  # Mount directory for persistent data storage
+      - /var/www/private/docker/my.cnf:/etc/my.cnf:ro  # Mount MySQL configuration file
+    ports:
+      - "3306:3306"  # Expose MySQL on port 3306
+    networks:
+      - backend  # Only accessible from backend services
+    logging:
+      driver: journald
+      options:
+        tag: "mysql"  # Tag the logs to easily identify them
+        mode: non-blocking
+        max-buffer-size: "4m"
+
+mariadb:
+  image: mariadb:latest
+  container_name: mariadb
+  restart: unless-stopped
+  environment:
+    #MYSQL_ROOT_PASSWORD: ${MARIA_DB_ROOT_PASSWORD}
+    #MYSQL_DATABASE: ${MARIADB_NAME}
+    #MYSQL_USER: ${MARIADB_USER}
+    #MYSQL_PASSWORD: ${MARIADB_PASSWORD}
+  volumes:
+    - /var/www/private/mariadb:/var/lib/mysql
+  logging:
+    driver: journald
+    options:
+      tag: "mariadb"
+      mode: non-blocking
+      max-buffer-size: "4m"
+  networks:
+    backend:
+      aliases:
+        - mariadb
+
+  # PHP 5.3 FPM Service
+  php53:
+    image: satyadeep/php-53-fpm-alpine-3.4-with-ext  # Use PHP 5.3 FPM with necessary extensions
+    container_name: php53
+    restart: unless-stopped  # Restart the container automatically unless explicitly stopped
+    volumes:
+      - /var/www/public:/var/www/public  # Mount public directory to serve PHP applications
+    logging:
+      driver: journald
+      options:
+        tag: "php53"  # Tag the logs to easily identify them
+        mode: non-blocking
+        max-buffer-size: "4m"
+    networks:
+      - backend  # Only accessible from backend services
+
+  # PHP 7.3 FPM Service
+  php73:
+    image: satyadeep/php-73-fpm-alpine-3.9-with-ext  # Use PHP 7.3 FPM with necessary extensions
+    container_name: php73
+    restart: unless-stopped  # Restart the container automatically unless explicitly stopped
+    volumes:
+      - /var/www/public:/var/www/public  # Mount public directory to serve PHP applications
+    logging:
+      driver: journald
+      options:
+        tag: "php73"  # Tag the logs to easily identify them
+        mode: non-blocking
+        max-buffer-size: "4m"
+    networks:
+      - backend  # Only accessible from backend services
+
+  # PHP 8.1 FPM Service
+  php81:
+    image: satyadeep/php-81-fpm-alpine-with-ext  # Use PHP 8.1 FPM with necessary extensions
+    container_name: php81
+    restart: unless-stopped  # Restart the container automatically unless explicitly stopped
+    volumes:
+      - /var/www/public:/var/www/public  # Mount public directory to serve PHP applications
+      - /var/www/private/config/php-8-overrides.ini:/usr/local/etc/php/conf.d/overrides.ini:ro  # Add custom overrides to PHP configuration
+    logging:
+      driver: journald
+      options:
+        tag: "php81"  # Tag the logs to easily identify them
+        mode: non-blocking
+        max-buffer-size: "4m"
+    networks:
+      - backend  # Only accessible from backend services
+
+  # Redis Cache Service
+  redis:
+    image: redis:alpine  # Use Redis with Alpine Linux for a lightweight image
+    container_name: redis
+    ports:
+      - "127.0.0.1:6379:6379"  # Expose Redis on port 6379
+    sysctls:
+      - net.core.somaxconn=511
+    restart: unless-stopped  # Restart the container automatically unless explicitly stopped
+    volumes:
+      - /var/www/private/redis:/data  # Mount directory for persistent Redis storage
+    logging:
+      driver: journald
+      options:
+        tag: "redis"  # Tag the logs to easily identify them
+        mode: non-blocking
+        max-buffer-size: "4m"
+    networks:
+      - backend  # Only accessible from backend services
+
+# Networks Definition
+networks:
+  web:
+    driver: bridge  # Public-facing network for web traffic
+  backend:
+    external: true  # Declare the backend network as external

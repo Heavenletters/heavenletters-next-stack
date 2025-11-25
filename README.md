@@ -8,7 +8,7 @@ A modern web application for accessing and managing Heaven Letters content, feat
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   Frontend      │    │   Backend        │    │   Database      │
 │   (Planned)     │◄──►│   Keystone.js    │◄──►│   MySQL         │
-│   Next.js       │    │   CMS/GraphQL    │    │   (Legacy       │
+│    AstroJS      │    │   CMS/GraphQL    │    │   (Legacy       │
 │                 │    │   TypeScript     │    │    Drupal 5.x)  │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
                               │
@@ -29,8 +29,8 @@ A modern web application for accessing and managing Heaven Letters content, feat
 - **Features**:
   - Modern CMS interface for managing Heaven Letters
   - User authentication and authorization
-  - Multi-tenant content management
   - RESTful and GraphQL APIs
+  - Translation engine and full internationalisation on sub-domains
 
 ### Legacy GraphQL API
 - **Location**: `graphql-api/`
@@ -88,7 +88,7 @@ Access at: http://localhost:4000/graphql
 - **Heaven Letters**: Spiritual messages with multi-language support
 - **User Management**: Admin, author, and translator roles
 - **Publishing Workflow**: Draft → Published status management
-- **Localization**: Support for multiple languages (en, es, fr, etc.)
+- **Localization**: Support for multiple languages (en, es, fr, etc.) served on sub-domains ex: fr.heavenletters.org it.heavenletters.org. English served on heavenletters.org
 
 ### Data Architecture
 - **Modern Schema**: Clean Keystone.js models
@@ -109,6 +109,7 @@ Access at: http://localhost:4000/graphql
 - **Auth Temporarily Disabled**: Authentication commented out in `backend/keystone.ts` for testing
 - **Custom Sync Scripts**: Data migration requires specific working directories and environment setup
 - **TypeScript Strict Mode Disabled**: `backend/tsconfig.json` has relaxed type checking for legacy compatibility
+- Drupal data tables will be deleted/obsolete after migration and testing is completed
 
 ### Critical Gotchas
 - **Environment Variables**: Both `DATABASE_URL` and custom env vars required

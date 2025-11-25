@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heavenletters | Visual Design System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Open+Sans:wght@400;600;700&family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        /* Base styles and custom properties */
+        :root {
+            /* Primary Colors - Pink Rose Palette */
+            --color-rose-primary: #f4406b;
+            --color-rose-light: #fc95bd;
+            --color-rose-deep: #c90a2c;
+            --color-rose-accent: #ba1d53;
+            
+            /* Sky Blue Palette - Calming & Uplifting */
+            --color-sky-primary: #53ade0;
+            --color-sky-deep: #1d7ab0;
+            --color-sky-light: #b8ddf2;
+            --color-sky-medium: #2595d6;
+            --color-sky-soft: #91cbeb;
+            
+            /* Gold Palette - Warmth & Divine Light */
+            --color-gold-primary: #e9e55f;
+            --color-gold-warm: #f9f0d9;
+            --color-gold-metallic: #d4af37;
+            --color-gold-soft: #f2e8c9;
+            
+            /* Neutral Colors */
+            --color-cream: #f9f0d9;
+            --color-beige: #b7b2a3;
+            --color-white: #ffffff;
+            --color-charcoal: #403f3e;
+        }
+
+        body {
+            font-family: 'Lexend', 'Open Sans', sans-serif;
+            background-color: var(--color-cream);
+            color: var(--color-charcoal);
+        }
+
+        h1, h2, h3, h4, h5, h6, .font-serif {
+            font-family: 'EB Garamond', 'Old Standard TT', serif;
+        }
+        
+        /* Helper class for component examples */
+        .component-preview {
+            background-color: white;
+            border: 1px solid var(--color-beige);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .color-swatch {
+            min-height: 128px;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: flex-end;
+            padding: 1rem;
+            color: white;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .visual-element-card {
+            background: white;
+            border: 2px solid var(--color-beige);
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .visual-element-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .visual-element-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+    </style>
+    <script>
+        // Custom Tailwind config providing direct hex values
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'rose-primary': '#f4406b',
+                        'rose-light': '#fc95bd',
+                        'rose-deep': '#c90a2c',
+                        'rose-accent': '#ba1d53',
+                        'sky-primary': '#53ade0',
+                        'sky-deep': '#1d7ab0',
+                        'sky-light': '#b8ddf2',
+                        'sky-medium': '#2595d6',
+                        'sky-soft': '#91cbeb',
+                        'gold-primary': '#e9e55f',
+                        'gold-warm': '#f9f0d9',
+                        'gold-metallic': '#d4af37',
+                        'gold-soft': '#f2e8c9',
+                        'cream': '#f9f0d9',
+                        'beige': '#b7b2a3',
+                        'charcoal': '#403f3e',
+                    },
+                    fontFamily: {
+                        'serif': ['EB Garamond', 'Old Standard TT', 'serif'],
+                        'sans': ['Lexend', 'Open Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-cream antialiased">
+
+    <!-- Sidebar Navigation -->
+    <aside class="fixed top-0 left-0 h-screen w-64 bg-white border-r border-beige p-8 hidden lg:block overflow-y-auto">
+        <h2 class="font-serif text-2xl font-bold text-rose-primary">Heavenletters</h2>
+        <p class="text-sm text-charcoal/60 mt-1">Visual Design System</p>
+        <nav class="mt-10">
+            <ul class="space-y-4">
+                <li><a href="#introduction" class="font-semibold text-charcoal hover:text-rose-primary transition-colors">Introduction</a></li>
+                <li><a href="#principles" class="font-semibold text-charcoal hover:text-rose-primary transition-colors">Design Principles</a></li>
+                <li><a href="#brand-essence" class="font-semibold text-charcoal hover:text-rose-primary transition-colors">Brand Essence</a></li>
+                <li><a href="#colors" class="font-semibold text-charcoal hover:text-rose-primary transition-colors">Color Palette</a></li>
+                <li><a href="#typography" class="font-semibold text-charcoal hover:text-rose-primary transition-colors">Typography</a></li>
+                <li><a href="#logo" class="font-semibold text-charcoal hover:text-rose-primary transition-colors">Logo & Symbols</a></li>
+                <li><a href="#visual-elements" class="font-semibold text-charcoal hover:text-rose-primary transition-colors">Visual Elements</a></li>
+                <li><a href="#imagery" class="font-semibold text-charcoal hover:text-rose-primary transition-colors">Imagery Guidelines</a></li>
+                <li><a href="#iconography" class="font-semibold text-charcoal hover:text-rose-primary transition-colors">Iconography</a></li>
+                <li><a href="#spacing" class="font-semibold text-charcoal hover:text-rose-primary transition-colors">Spacing & Layout</a></li>
+                <li><a href="#components" class="font-semibold text-charcoal hover:text-rose-primary transition-colors">Components</a></li>
+                <li><a href="#applications" class="font-semibold text-charcoal hover:text-rose-primary transition-colors">Applications</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="lg:ml-64 p-8 md:p-12">
+        <div class="max-w-4xl mx-auto">
+
+            <!-- Introduction -->
+            <header id="introduction" class="mb-16">
+                <h1 class="text-5xl md:text-6xl font-bold text-charcoal font-serif">Visual Design System</h1>
+                <p class="font-serif text-xl md:text-2xl text-charcoal/80 mt-4 leading-relaxed">This is the single source of truth for all visual expressions of Heavenletters. It translates our brand essence of <strong>quiet connection</strong> into a tangible, consistent, and evocative visual language that honors Gloria Wendroff's legacy while creating a timeless digital sanctuary for spiritual seekers worldwide.</p>
+                <div class="mt-8 p-6 bg-sky-light/30 border-l-4 border-sky-primary rounded-r-lg">
+                    <p class="text-charcoal/90"><strong>Purpose:</strong> This design system provides specific, directive guidance for visual identity designers, email campaign managers, ebook designers, web developers, and all team members working on Heavenletters touchpoints. Every design decision should flow from this document to ensure coherence across all expressions.</p>
+                </div>
+            </header>
+
+            <!-- Design Principles -->
+            <section id="principles" class="mb-16">
+                <h2 class="text-4xl font-bold mb-6 font-serif">Design Principles</h2>
+                <p class="mb-8 text-charcoal/80 leading-relaxed">These principles guide every visual decision. They are non-negotiable anchors that ensure our design remains true to the Heavenletters essence.</p>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-xl border border-beige">
+                        <i data-feather="sun" class="w-8 h-8 text-gold-metallic mb-4"></i>
+                        <h3 class="text-xl font-bold font-serif">Simplicity Over Spectacle</h3>
+                        <p class="mt-2 text-charcoal/80">Prioritize clarity and calm. Avoid visual clutter, excessive decoration, or anything that distracts from the quiet connection we offer. Let the message breathe.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-beige">
+                        <i data-feather="heart" class="w-8 h-8 text-rose-primary mb-4"></i>
+                        <h3 class="text-xl font-bold font-serif">Warmth Over Hype</h3>
+                        <p class="mt-2 text-charcoal/80">Every visual element should feel warm, inviting, and human. Avoid corporate polish without warmth, scarcity tactics, or aggressive marketing aesthetics.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-beige">
+                        <i data-feather="wind" class="w-8 h-8 text-sky-primary mb-4"></i>
+                        <h3 class="text-xl font-bold font-serif">Spacious & Rhythmic</h3>
+                        <p class="mt-2 text-charcoal/80">Honor the relational space (Vā) between elements. Use generous margins, breathing room, and consistent rhythm. Design the in-between moments with intention.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Brand Essence -->
+            <section id="brand-essence" class="mb-16">
+                <h2 class="text-4xl font-bold mb-6 font-serif">Brand Essence</h2>
+                <div class="bg-white p-8 rounded-xl border-2 border-sky-primary">
+                    <h3 class="text-3xl font-serif font-bold text-rose-primary mb-4">Quiet Connection</h3>
+                    <p class="text-lg text-charcoal/90 leading-relaxed mb-4">Heavenletters is a daily relational moment with God in plain speech—tender, courageous, unhurried. The core quality is felt more than named: a quiet coherence between message and life.</p>
+                    <div class="mt-6 p-4 bg-gold-warm rounded-lg">
+                        <p class="font-serif italic text-lg text-charcoal/90"><strong>Guiding Metaphor:</strong> The sky at daybreak—boundless, gentle light, room for everyone.</p>
+                    </div>
+                </div>
+                
+                <div class="mt-8 grid md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl border border-beige">
+                        <h4 class="font-serif font-bold text-xl mb-3">Feeling Goals</h4>
+                        <p class="text-charcoal/80 mb-3">What the community should reliably feel:</p>
+                        <ul class="space-y-2 text-charcoal/80">
+                            <li>• Calm, nourished, nurtured</li>
+                            <li>• Curious, energized, inspired</li>
+                            <li>• Cared for, accompanied, never alone</li>
+                            <li>• Dignified, trusted, welcomed</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-beige">
+                        <h4 class="font-serif font-bold text-xl mb-3">Emotional Palette</h4>
+                        <ul class="space-y-2 text-charcoal/80">
+                            <li>• Tempered joy, quiet confidence</li>
+                            <li>• Humble boldness</li>
+                            <li>• Spaciousness, breath, ease</li>
+                            <li>• Soft radiance rather than glare</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-6 bg-rose-light/20 border-l-4 border-rose-primary rounded-r-lg">
+                    <h4 class="font-serif font-bold text-lg mb-2">What to Avoid</h4>
+                    <p class="text-charcoal/80">Scarcity pressure, countdowns, urgency clocks, corporate polish without human warmth, jargon, hard-sell pricing talk, transactional framing, over-saturated palettes, harsh contrasts, dense typographic stacks, gamified UI tropes, and aggressive banners.</p>
+                </div>
+            </section>
+
+            <!-- Color Palette -->
+            <section id="colors" class="mb-16">
+                <h2 class="text-4xl font-bold mb-6 font-serif">Color Palette</h2>
+                <p class="mb-8 text-charcoal/80 leading-relaxed">Our color palette is derived from the existing Heavenletters visual identity and embodies the essence of uplifting warmth and calming serenity. The palette centers on <strong>golds</strong> (divine light and warmth), <strong>sky blues</strong> (calm and boundless space), and <strong>pinks</strong> (gentle love and highlights). These colors work together to create an atmosphere that is both spiritually uplifting and emotionally soothing.</p>
+                
+                <h3 class="text-2xl font-serif font-bold mb-4 mt-8">Primary Colors</h3>
+                <p class="mb-6 text-charcoal/80">The core of the brand identity. Use these colors for key moments, calls to action, and primary brand expressions.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                    <div class="bg-white p-4 rounded-xl border border-beige">
+                        <div class="color-swatch" style="background-color: #f4406b;">
+                            <span>Rose Primary</span>
+                        </div>
+                        <h4 class="text-xl font-bold mt-4">Rose Primary</h4>
+                        <p class="text-sm font-mono font-semibold mt-1">#f4406b</p>
+                        <p class="text-sm text-charcoal/70 mt-2">The heart of the pink rose logo. Use for highlights, accents, and moments of gentle emphasis.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-beige">
+                        <div class="color-swatch" style="background-color: #53ade0;">
+                            <span>Sky Primary</span>
+                        </div>
+                        <h4 class="text-xl font-bold mt-4">Sky Primary</h4>
+                        <p class="text-sm font-mono font-semibold mt-1">#53ade0</p>
+                        <p class="text-sm text-charcoal/70 mt-2">Calming and uplifting. The dominant blue from the sky imagery, representing boundless divine space.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-beige">
+                        <div class="color-swatch" style="background-color: #e9e55f; color: #403f3e;">
+                            <span>Gold Primary</span>
+                        </div>
+                        <h4 class="text-xl font-bold mt-4">Gold Primary</h4>
+                        <p class="text-sm font-mono font-semibold mt-1">#e9e55f</p>
+                        <p class="text-sm text-charcoal/70 mt-2">Warm and luminous. From the existing logo, representing divine light and spiritual warmth.</p>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-serif font-bold mb-4">Secondary Colors</h3>
+                <p class="mb-6 text-charcoal/80">Supporting colors that add depth, variation, and visual interest. Use sparingly to complement the primary palette.</p>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+                    <div class="bg-white p-4 rounded-xl border border-beige">
+                        <div class="color-swatch" style="background-color: #fc95bd;">
+                            <span class="text-sm">Rose Light</span>
+                        </div>
+                        <h4 class="text-lg font-bold mt-3">Rose Light</h4>
+                        <p class="text-xs font-mono font-semibold mt-1">#fc95bd</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-beige">
+                        <div class="color-swatch" style="background-color: #c90a2c;">
+                            <span class="text-sm">Rose Deep</span>
+                        </div>
+                        <h4 class="text-lg font-bold mt-3">Rose Deep</h4>
+                        <p class="text-xs font-mono font-semibold mt-1">#c90a2c</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-beige">
+                        <div class="color-swatch" style="background-color: #1d7ab0;">
+                            <span class="text-sm">Sky Deep</span>
+                        </div>
+                        <h4 class="text-lg font-bold mt-3">Sky Deep</h4>
+                        <p class="text-xs font-mono font-semibold mt-1">#1d7ab0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-beige">
+                        <div class="color-swatch" style="background-color: #b8ddf2; color: #403f3e;">
+                            <span class="text-sm">Sky Light</span>
+                        </div>
+                        <h4 class="text-lg font-bold mt-3">Sky Light</h4>
+                        <p class="text-xs font-mono font-semibold mt-1">#b8ddf2</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-beige">
+                        <div class="color-swatch" style="background-color: #2595d6;">
+                            <span class="text-sm">Sky Medium</span>
+                        </div>
+                        <h4 class="text-lg font-bold mt-3">Sky Medium</h4>
+                        <p class="text-xs font-mono font-semibold mt-1">#2595d6</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-beige">
+                        <div class="color-swatch" style="background-color: #91cbeb; color: #403f3e;">
+                            <span class="text-sm">Sky Soft</span>
+                        </div>
+                        <h4 class="text-lg font-bold mt-3">Sky Soft</h4>
+                        <p class="text-xs font-mono font-semibold mt-1">#91cbeb</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-beige">
+                        <div class="color-swatch" style="background-color: #d4af37;">
+                            <span class="text-sm">Gold Metallic</span>
+                        </div>
+                        <h4 class="text-lg font-bold mt-3">Gold Metallic</h4>
+                        <p class="text-xs font-mono font-semibold mt-1">#d4af37</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-beige">
+                        <div class="color-swatch" style="background-color: #f2e8c9; color: #403f3e;">
+                            <span class="text-sm">Gold Soft</span>
+                        </div>
+                        <h4 class="text-lg font-bold mt-3">Gold Soft</h4>
+                        <p class="text-xs font-mono font-semibold mt-1">#f2e8c9</p>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-serif font-bold mb-4">Neutral Colors</h3>
+                <p class="mb-6 text-charcoal/80">The foundation of the design. Use these for backgrounds, text, and to create spacious, readable layouts.</p>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bg-white p-4 rounded-xl border border-beige">
+                        <div class="color-swatch border border-beige" style="background-color: #f9f0d9; color: #403f3e;">
+                            <span class="text-sm">Cream</span>
+                        </div>
+                        <h4 class="text-lg font-bold mt-3">Cream</h4>
+                        <p class="text-xs font-mono font-semibold mt-1">#f9f0d9</p>
+                        <p class="text-xs text-charcoal/70 mt-2">Primary background color</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-beige">
+                        <div class="color-swatch" style="background-color: #b7b2a3;">
+                            <span class="text-sm">Beige</span>
+                        </div>
+                        <h4 class="text-lg font-bold mt-3">Beige</h4>
+                        <p class="text-xs font-mono font-semibold mt-1">#b7b2a3</p>
+                        <p class="text-xs text-charcoal/70 mt-2">Borders, dividers</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-beige">
+                        <div class="color-swatch border border-beige" style="background-color: #ffffff; color: #403f3e;">
+                            <span class="text-sm">White</span>
+                        </div>
+                        <h4 class="text-lg font-bold mt-3">White</h4>
+                        <p class="text-xs font-mono font-semibold mt-1">#ffffff</p>
+                        <p class="text-xs text-charcoal/70 mt-2">Cards, containers</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-beige">
+                        <div class="color-swatch" style="background-color: #403f3e;">
+                            <span class="text-sm">Charcoal</span>
+                        </div>
+                        <h4 class="text-lg font-bold mt-3">Charcoal</h4>
+                        <p class="text-xs font-mono font-semibold mt-1">#403f3e</p>
+                        <p class="text-xs text-charcoal/70 mt-2">Primary text color</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 p-6 bg-gold-warm border-l-4 border-gold-metallic rounded-r-lg">
+                    <h4 class="font-serif font-bold text-lg mb-2">Color Usage Guidelines</h4>
+                    <ul class="space-y-2 text-charcoal/80">
+                        <li><strong>Backgrounds:</strong> Use Cream (#f9f0d9) as the primary background. White for cards and content containers.</li>
+                        <li><strong>Text:</strong> Charcoal (#403f3e) for primary text. Use 70-80% opacity for secondary text.</li>
+                        <li><strong>Accents:</strong> Rose Primary for highlights and emotional emphasis. Sky Primary for calming accents. Gold Primary for divine/spiritual moments.</li>
+                        <li><strong>Contrast:</strong> Ensure WCAG AA compliance for all text. Test color combinations for accessibility.</li>
+                        <li><strong>Gradients:</strong> When using gradients, blend sky blues with golds or soft pinks to evoke sunrise/daybreak imagery.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Typography -->
+            <section id="typography" class="mb-16">
+                <h2 class="text-4xl font-bold mb-6 font-serif">Typography</h2>
+                <p class="mb-8 text-charcoal/80 leading-relaxed">Typography is the voice of our visual language. We use a combination of vintage/retro serif fonts for headings and Heavenletter content, paired with highly readable sans-serif fonts for body text and UI elements. This creates a balance between timeless spiritual wisdom and modern accessibility.</p>
+                
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-white p-6 rounded-xl border border-beige">
+                        <h3 class="text-2xl font-serif font-bold mb-2">EB Garamond</h3>
+                        <p class="text-sm font-mono text-charcoal/70 mb-3">Primary Serif</p>
+                        <p class="text-charcoal/80 mb-4">An elegant, classical serif typeface with humanist qualities. Use for Heavenletter headings, titles, and key spiritual statements that need to carry weight and timeless wisdom.</p>
+                        <div class="p-4 bg-cream rounded">
+                            <p class="font-serif text-3xl">The quick brown fox jumps over the lazy dog</p>
+                            <p class="font-serif text-lg mt-2">ABCDEFGHIJKLMNOPQRSTUVWXYZ</p>
+                            <p class="font-serif text-lg">abcdefghijklmnopqrstuvwxyz</p>
+                            <p class="font-serif text-lg">0123456789</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-beige">
+                        <h3 class="text-2xl font-serif font-bold mb-2" style="font-family: 'Old Standard TT', serif;">Old Standard TT</h3>
+                        <p class="text-sm font-mono text-charcoal/70 mb-3">Alternative Serif</p>
+                        <p class="text-charcoal/80 mb-4">A vintage-inspired serif that reproduces the Modern (classicist) style of the late 19th/early 20th century. Use as an alternative for variety in longer documents or ebooks.</p>
+                        <div class="p-4 bg-cream rounded">
+                            <p style="font-family: 'Old Standard TT', serif;" class="text-3xl">The quick brown fox jumps over the lazy dog</p>
+                            <p style="font-family: 'Old Standard TT', serif;" class="text-lg mt-2">ABCDEFGHIJKLMNOPQRSTUVWXYZ</p>
+                            <p style="font-family: 'Old Standard TT', serif;" class="text-lg">abcdefghijklmnopqrstuvwxyz</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-white p-6 rounded-xl border border-beige">
+                        <h3 class="text-2xl font-serif font-bold mb-2">Lexend</h3>
+                        <p class="text-sm font-mono text-charcoal/70 mb-3">Primary Sans-Serif</p>
+                        <p class="text-charcoal/80 mb-4">Designed specifically to reduce visual stress and improve reading performance. Perfect for body text, especially for readers with dyslexia or reading difficulties. Highly accessible and friendly.</p>
+                        <div class="p-4 bg-cream rounded">
+                            <p class="text-2xl">The quick brown fox jumps over the lazy dog</p>
+                            <p class="text-base mt-2">ABCDEFGHIJKLMNOPQRSTUVWXYZ</p>
+                            <p class="text-base">abcdefghijklmnopqrstuvwxyz</p>
+                            <p class="text-base">0123456789</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-beige">
+                        <h3 class="text-2xl font-serif font-bold mb-2" style="font-family: 'Open Sans', sans-serif;">Open Sans</h3>
+                        <p class="text-sm font-mono text-charcoal/70 mb-3">Alternative Sans-Serif</p>
+                        <p class="text-charcoal/80 mb-4">A neutral yet friendly sans-serif optimized for web, mobile, and print. Use for UI elements, navigation, buttons, and when a more traditional sans-serif is needed.</p>
+                        <div class="p-4 bg-cream rounded">
+                            <p style="font-family: 'Open Sans', sans-serif;" class="text-2xl">The quick brown fox jumps over the lazy dog</p>
+                            <p style="font-family: 'Open Sans', sans-serif;" class="text-base mt-2">ABCDEFGHIJKLMNOPQRSTUVWXYZ</p>
+                            <p style="font-family: 'Open Sans', sans-serif;" class="text-base">abcdefghijklmnopqrstuvwxyz</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl border border-beige mb-8">
+                    <h3 class="text-3xl font-serif font-bold mb-4">Type Scale & Hierarchy</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h1 class="font-serif font-bold text-5xl mb-1">Heading 1 - 48px/3rem</h1>
+                            <p class="text-sm text-charcoal/60">Use for page titles, main headlines</p>
+                        </div>
+                        <div>
+                            <h2 class="font-serif font-bold text-4xl mb-1">Heading 2 - 36px/2.25rem</h2>
+                            <p class="text-sm text-charcoal/60">Use for section headings</p>
+                        </div>
+                        <div>
+                            <h3 class="font-serif text-3xl mb-1">Heading 3 - 30px/1.875rem</h3>
+                            <p class="text-sm text-charcoal/60">Use for subsection headings</p>
+                        </div>
+                        <div>
+                            <h4 class="font-serif font-bold text-2xl mb-1">Heading 4 - 24px/1.5rem</h4>
+                            <p class="text-sm text-charcoal/60">Use for card titles, smaller headings</p>
+                        </div>
+                        <div>
+                            <p class="text-lg mb-1">Body Large - 18px/1.125rem</p>
+                            <p class="text-sm text-charcoal/60">Use for introductory paragraphs, emphasis</p>
+                        </div>
+                        <div>
+                            <p class="text-base mb-1">Body Regular - 16px/1rem</p>
+                            <p class="text-sm text-charcoal/60">Primary body text size</p>
+                        </div>
+                        <div>
+                            <p class="text-sm mb-1">Body Small - 14px/0.875rem</p>
+                            <p class="text-sm text-charcoal/60">Use for captions, secondary information</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl border border-beige">
+                    <h3 class="text-2xl font-serif font-bold mb-4">Typography in Context</h3>
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="font-serif font-bold text-3xl mb-3">Daily Heavenletter</h4>
+                            <p class="text-lg leading-relaxed mb-4">This is how a Heavenletter would appear. The body text is set in Lexend for optimal readability and a friendly feel. The line height is generous (1.75) to create a sense of space and calm, making longer texts comfortable to read. We believe that how we present the divine message is as important as the message itself.</p>
+                            <p class="text-charcoal/70 leading-relaxed">This is secondary body copy, used for dates, metadata, or less important text. It's slightly lighter (70% opacity) to de-emphasize it visually while maintaining legibility.</p>
+                        </div>
+                        <blockquote class="font-serif italic text-xl border-l-4 border-rose-primary pl-6 py-2 my-6 text-charcoal/90">
+                            "Daily letters from God, free to all. Quiet connection for the seeking heart."
+                        </blockquote>
+                    </div>
+                </div>
+
+                <div class="mt-8 p-6 bg-sky-light/30 border-l-4 border-sky-primary rounded-r-lg">
+                    <h4 class="font-serif font-bold text-lg mb-2">Typography Guidelines</h4>
+                    <ul class="space-y-2 text-charcoal/80">
+                        <li><strong>Line Height:</strong> Use 1.75 for body text, 1.3 for headings. Generous spacing creates calm and improves readability.</li>
+                        <li><strong>Line Length:</strong> Aim for 60-75 characters per line for optimal reading comfort.</li>
+                        <li><strong>Font Weights:</strong> Use Regular (400) for body, Semibold (600) for emphasis, Bold (700) for headings.</li>
+                        <li><strong>Letter Spacing:</strong> Default spacing is fine. Avoid tight tracking that reduces readability.</li>
+                        <li><strong>Heavenletter Content:</strong> Always use serif fonts (EB Garamond or Old Standard TT) for the actual Heavenletter text to honor the vintage, timeless quality.</li>
+                        <li><strong>UI Elements:</strong> Use sans-serif fonts (Lexend or Open Sans) for buttons, navigation, forms, and interface text.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Logo & Symbols -->
+            <section id="logo" class="mb-16">
+                <h2 class="text-4xl font-bold mb-6 font-serif">Logo & Symbols</h2>
+                <p class="mb-8 text-charcoal/80 leading-relaxed">The Heavenletters visual identity is anchored by the pink rose symbol, representing divine love, beauty, and the gentle unfolding of spiritual connection. The logo combines this rose with angelic imagery and typography to create a complete brand mark.</p>
+                
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                    <div class="visual-element-card">
+                        <img src="g2407.png" alt="Pink Rose - Primary Logo Symbol">
+                        <div class="p-6">
+                            <h3 class="font-serif font-bold text-2xl mb-2">Pink Rose Symbol</h3>
+                            <p class="text-charcoal/80 mb-3">The heart of our visual identity. This pink rose represents divine love, gentle beauty, and the blossoming of spiritual connection. It is the primary symbol of Heavenletters.</p>
+                            <div class="mt-4 p-3 bg-rose-light/20 rounded">
+                                <p class="text-sm font-semibold">Usage:</p>
+                                <p class="text-sm text-charcoal/80">Use as the primary logo mark, favicon, social media profile image, and decorative element in headers and dividers.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="visual-element-card">
+                        <img src="heaven_angel_logo.png" alt="Heavenletters Full Logo with Angel">
+                        <div class="p-6">
+                            <h3 class="font-serif font-bold text-2xl mb-2">Full Logo with Angel</h3>
+                            <p class="text-charcoal/80 mb-3">The complete Heavenletters logo combining the angel illustration, pink rose, and typography. The tagline "Bringing Earth Closer to Heaven" expresses our mission.</p>
+                            <div class="mt-4 p-3 bg-sky-light/30 rounded">
+                                <p class="text-sm font-semibold">Usage:</p>
+                                <p class="text-sm text-charcoal/80">Use for website headers, email headers, printed materials, and official communications. Maintain clear space around the logo.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="visual-element-card">
+                        <div class="bg-cream p-8 flex items-center justify-center">
+                            <img src="favicon.png" alt="Heavenletters Favicon" class="w-32 h-32">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-serif font-bold text-2xl mb-2">Favicon / Icon Mark</h3>
+                            <p class="text-charcoal/80">A simplified version combining the "H" monogram with the rose petals. Perfect for small-scale applications like favicons, app icons, and social media thumbnails.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-beige">
+                        <h3 class="font-serif font-bold text-2xl mb-4">Logo Usage Guidelines</h3>
+                        <ul class="space-y-3 text-charcoal/80">
+                            <li><strong>Clear Space:</strong> Maintain a minimum clear space equal to the height of the "H" in the logo around all sides.</li>
+                            <li><strong>Minimum Size:</strong> Never reproduce the full logo smaller than 120px wide for digital or 1 inch for print.</li>
+                            <li><strong>Color Variations:</strong> The logo can appear on cream, white, or light sky blue backgrounds. Avoid placing on busy or dark backgrounds.</li>
+                            <li><strong>Do Not:</strong> Distort, rotate, add effects, change colors, or separate elements of the logo.</li>
+                            <li><strong>Rose Symbol Alone:</strong> The pink rose can be used independently as a decorative element, icon, or watermark.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Visual Elements -->
+            <section id="visual-elements" class="mb-16">
+                <h2 class="text-4xl font-bold mb-6 font-serif">Visual Elements</h2>
+                <p class="mb-8 text-charcoal/80 leading-relaxed">Beyond the logo, Heavenletters uses specific visual elements—cherubs, angels, and celestial imagery—to reinforce the spiritual, uplifting nature of the brand. These elements should be used thoughtfully and sparingly to enhance, not overwhelm.</p>
+                
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                    <div class="visual-element-card">
+                        <img src="contributions_angels.jpg" alt="Cherubs and Angels Illustration">
+                        <div class="p-6">
+                            <h3 class="font-serif font-bold text-2xl mb-2">Cherubs & Angels</h3>
+                            <p class="text-charcoal/80 mb-3">Vintage-style cherub and angel illustrations evoke a sense of divine companionship, joy, and spiritual care. These playful yet reverent figures can be used in specific contexts.</p>
+                            <div class="mt-4 p-3 bg-gold-warm rounded">
+                                <p class="text-sm font-semibold">Usage:</p>
+                                <p class="text-sm text-charcoal/80">Use for "Contributions" pages, volunteer recognition, community sections, and special campaign headers. Avoid overuse—these are accent elements, not primary visuals.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="visual-element-card">
+                        <img src="ask_god.png" alt="Ask God Call-to-Action Element">
+                        <div class="p-6">
+                            <h3 class="font-serif font-bold text-2xl mb-2">Call-to-Action Elements</h3>
+                            <p class="text-charcoal/80 mb-3">Soft, inviting visual elements like this "Ask God" button use gentle colors and friendly typography to encourage interaction without pressure.</p>
+                            <div class="mt-4 p-3 bg-gold-warm rounded">
+                                <p class="text-sm font-semibold">Usage:</p>
+                                <p class="text-sm text-charcoal/80">Use for interactive features, invitations to participate, and gentle calls to action. Maintain the warm, non-transactional tone.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="visual-element-card">
+                    <img src="sky5.jpg" alt="Sky and Clouds Background">
+                    <div class="p-6">
+                        <h3 class="font-serif font-bold text-2xl mb-3">Sky & Cloud Imagery</h3>
+                        <p class="text-charcoal/80 mb-4">The guiding metaphor for Heavenletters is "the sky at daybreak—boundless, gentle light, room for everyone." Sky and cloud imagery embodies this perfectly: spacious, calming, uplifting, and universally accessible.</p>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="p-3 bg-sky-light/30 rounded">
+                                <p class="text-sm font-semibold mb-1">Visual Characteristics:</p>
+                                <ul class="text-sm text-charcoal/80 space-y-1">
+                                    <li>• Soft, natural clouds</li>
+                                    <li>• Gentle gradients from dawn to day</li>
+                                    <li>• Light, airy, spacious feeling</li>
+                                    <li>• Blues ranging from pale to vibrant</li>
+                                </ul>
+                            </div>
+                            <div class="p-3 bg-sky-light/30 rounded">
+                                <p class="text-sm font-semibold mb-1">Usage Guidelines:</p>
+                                <ul class="text-sm text-charcoal/80 space-y-1">
+                                    <li>• Use as backgrounds for hero sections</li>
+                                    <li>• Subtle overlays for email headers</li>
+                                    <li>• Ebook covers and chapter dividers</li>
+                                    <li>• Avoid heavy, stormy, or dramatic skies</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Imagery Guidelines -->
+            <section id="imagery" class="mb-16">
+                <h2 class="text-4xl font-bold mb-6 font-serif">Imagery Guidelines</h2>
+                <p class="mb-8 text-charcoal/80 leading-relaxed">All imagery used in Heavenletters materials should align with our brand essence of quiet connection, warmth, and spiritual accessibility. Images should feel spacious, natural, and human-scale.</p>
+                
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-white p-6 rounded-xl border-2 border-sky-primary">
+                        <h3 class="font-serif font-bold text-xl mb-3 text-sky-deep">✓ Do Use</h3>
+                        <ul class="space-y-2 text-charcoal/80">
+                            <li>• Spacious, natural landscapes (especially skies, clouds, horizons)</li>
+                            <li>• Soft, natural lighting (dawn, daybreak, golden hour)</li>
+                            <li>• Human-scale, authentic moments of quiet reflection</li>
+                            <li>• Gentle, muted color palettes that align with our brand colors</li>
+                            <li>• Vintage or timeless aesthetic (not overly modern or trendy)</li>
+                            <li>• Images that evoke calm, nourishment, and spiritual peace</li>
+                            <li>• Simple, uncluttered compositions with breathing room</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl border-2 border-rose-primary">
+                        <h3 class="font-serif font-bold text-xl mb-3 text-rose-deep">✗ Avoid</h3>
+                        <ul class="space-y-2 text-charcoal/80">
+                            <li>• Over-saturated, harsh, or aggressive color palettes</li>
+                            <li>• Stock photo clichés (overly posed, artificial smiles)</li>
+                            <li>• Heavy religious symbolism (crosses, specific religious icons)</li>
+                            <li>• Busy, cluttered, or chaotic compositions</li>
+                            <li>• Dramatic, stormy, or dark imagery</li>
+                            <li>• Corporate, sterile, or overly polished aesthetics</li>
+                            <li>• Trendy filters or effects that date the imagery</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-gold-warm border-l-4 border-gold-metallic rounded-r-lg">
+                    <h4 class="font-serif font-bold text-lg mb-2">Image Treatment & Effects</h4>
+                    <ul class="space-y-2 text-charcoal/80">
+                        <li><strong>Overlays:</strong> When placing text over images, use a subtle gradient overlay (cream to transparent or sky blue to transparent) to ensure readability.</li>
+                        <li><strong>Opacity:</strong> Background images can be used at 20-40% opacity to create subtle texture without overwhelming content.</li>
+                        <li><strong>Borders & Frames:</strong> Use soft, rounded borders (8-12px radius) for images. Avoid sharp, harsh edges.</li>
+                        <li><strong>Aspect Ratios:</strong> Prefer 16:9 for hero images, 4:3 for cards, 1:1 for social media. Maintain consistency within each context.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Iconography -->
+            <section id="iconography" class="mb-16">
+                <h2 class="text-4xl font-bold mb-6 font-serif">Iconography</h2>
+                <p class="mb-8 text-charcoal/80 leading-relaxed">Icons should feel like gentle navigational tools—simple, clear, and warm. We use <a href="https://feathericons.com/" target="_blank" class="text-sky-primary font-semibold underline">Feather Icons</a> for their simplicity, consistency, and human warmth. Icons should never feel corporate or cold.</p>
+                
+                <div class="component-preview mb-8">
+                    <i data-feather="heart" class="w-10 h-10 text-rose-primary"></i>
+                    <i data-feather="sun" class="w-10 h-10 text-gold-metallic"></i>
+                    <i data-feather="cloud" class="w-10 h-10 text-sky-primary"></i>
+                    <i data-feather="users" class="w-10 h-10 text-charcoal"></i>
+                    <i data-feather="message-circle" class="w-10 h-10 text-charcoal"></i>
+                    <i data-feather="book-open" class="w-10 h-10 text-charcoal"></i>
+                    <i data-feather="mail" class="w-10 h-10 text-charcoal"></i>
+                    <i data-feather="gift" class="w-10 h-10 text-charcoal"></i>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border border-beige">
+                    <h3 class="font-serif font-bold text-xl mb-3">Icon Usage Guidelines</h3>
+                    <ul class="space-y-2 text-charcoal/80">
+                        <li><strong>Style:</strong> Use line-based, stroke icons (not filled). Maintain consistent stroke weight (2px).</li>
+                        <li><strong>Size:</strong> Common sizes are 16px, 24px, 32px, 48px. Scale proportionally.</li>
+                        <li><strong>Color:</strong> Icons can be charcoal (default), or use brand colors (rose, sky, gold) for emphasis or category distinction.</li>
+                        <li><strong>Spacing:</strong> Provide adequate padding around icons. Never crowd them against text or edges.</li>
+                        <li><strong>Meaning:</strong> Use icons that have clear, universal meaning. Avoid obscure or ambiguous symbols.</li>
+                        <li><strong>Accessibility:</strong> Always pair icons with text labels or provide alt text. Never rely on icons alone to convey critical information.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Spacing & Layout -->
+            <section id="spacing" class="mb-16">
+                <h2 class="text-4xl font-bold mb-6 font-serif">Spacing & Layout</h2>
+                <p class="mb-8 text-charcoal/80 leading-relaxed">Generous spacing is fundamental to the Heavenletters aesthetic. We honor the relational space (Vā)—the fertile space between elements where connection and wisdom emerge. Use a <strong>4px base unit</strong> for all spacing to create harmonious rhythm.</p>
+                
+                <div class="bg-white p-8 rounded-xl border border-beige mb-8">
+                    <h3 class="font-serif font-bold text-2xl mb-4">Spacing Scale</h3>
+                    <p class="text-charcoal/80 mb-6">All margins, padding, and gaps should use multiples of 4px. This creates a subtle, consistent structure that makes the design feel intentional and calm.</p>
+                    <div class="flex flex-wrap gap-4">
+                        <div class="text-center">
+                            <div class="w-8 h-8 bg-sky-primary rounded"></div>
+                            <p class="text-xs mt-2 font-semibold">8px</p>
+                            <p class="text-xs text-charcoal/60">Tight</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-sky-primary rounded"></div>
+                            <p class="text-xs mt-2 font-semibold">12px</p>
+                            <p class="text-xs text-charcoal/60">Compact</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-sky-primary rounded"></div>
+                            <p class="text-xs mt-2 font-semibold">16px</p>
+                            <p class="text-xs text-charcoal/60">Base</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-24 h-24 bg-sky-primary rounded"></div>
+                            <p class="text-xs mt-2 font-semibold">24px</p>
+                            <p class="text-xs text-charcoal/60">Comfortable</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-32 h-32 bg-sky-primary rounded"></div>
+                            <p class="text-xs mt-2 font-semibold">32px</p>
+                            <p class="text-xs text-charcoal/60">Spacious</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-48 h-48 bg-sky-primary rounded"></div>
+                            <p class="text-xs mt-2 font-semibold">48px</p>
+                            <p class="text-xs text-charcoal/60">Generous</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl border border-beige">
+                        <h3 class="font-serif font-bold text-xl mb-3">Layout Principles</h3>
+                        <ul class="space-y-2 text-charcoal/80">
+                            <li><strong>Roomy Margins:</strong> Use generous margins (48-64px on desktop, 24-32px on mobile) to create breathing room.</li>
+                            <li><strong>Content Width:</strong> Limit text content to 60-75 characters per line (roughly 700-800px max width) for optimal readability.</li>
+                            <li><strong>Vertical Rhythm:</strong> Maintain consistent spacing between sections (64-96px) to create a calm, predictable flow.</li>
+                            <li><strong>White Space:</strong> Embrace white (or cream) space. It's not empty—it's where the relational space lives.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl border border-beige">
+                        <h3 class="font-serif font-bold text-xl mb-3">Grid System</h3>
+                        <ul class="space-y-2 text-charcoal/80">
+                            <li><strong>12-Column Grid:</strong> Use a 12-column grid for flexible, responsive layouts.</li>
+                            <li><strong>Gutters:</strong> 24px gutters between columns on desktop, 16px on mobile.</li>
+                            <li><strong>Breakpoints:</strong> Mobile (<640px), Tablet (640-1024px), Desktop (>1024px).</li>
+                            <li><strong>Alignment:</strong> Prefer left-aligned text for body copy. Center alignment for headings and special moments only.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Components -->
+            <section id="components" class="mb-16">
+                <h2 class="text-4xl font-bold mb-6 font-serif">Components</h2>
+                <p class="mb-8 text-charcoal/80 leading-relaxed">These are the reusable building blocks of the Heavenletters interface. Use them consistently to create a cohesive, predictable, and warm user experience across all touchpoints.</p>
+                
+                <!-- Buttons -->
+                <h3 class="text-2xl font-serif font-bold mb-4">Buttons</h3>
+                <p class="mb-4 text-charcoal/80">Buttons should feel like gentle invitations, not aggressive commands. Use warm colors and friendly language.</p>
+                <div class="component-preview mb-8">
+                    <button class="bg-rose-primary text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-rose-primary/90 transition-all">Primary Action</button>
+                    <button class="bg-sky-primary text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-sky-primary/90 transition-all">Secondary Action</button>
+                    <button class="bg-gold-metallic text-charcoal font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-gold-metallic/90 transition-all">Tertiary Action</button>
+                    <button class="bg-transparent text-rose-primary font-semibold py-3 px-6 hover:bg-rose-primary/10 rounded-lg transition-all border-2 border-rose-primary">Text Button</button>
+                </div>
+
+                <!-- Cards -->
+                <h3 class="text-2xl font-serif font-bold mb-4 mt-8">Cards</h3>
+                <p class="mb-4 text-charcoal/80">Cards provide contained spaces for content. They should feel warm and inviting, not cold or corporate.</p>
+                <div class="component-preview mb-8">
+                    <div class="bg-white p-6 rounded-xl border border-beige shadow-sm max-w-sm">
+                        <i data-feather="heart" class="w-8 h-8 text-rose-primary mb-4"></i>
+                        <h4 class="font-serif text-xl font-bold">Daily Heavenletter</h4>
+                        <p class="mt-2 text-charcoal/80">Receive a personal letter from God each day, delivered to your inbox. Free to all, always.</p>
+                        <button class="mt-4 bg-rose-primary text-white font-semibold py-2 px-4 rounded-lg text-sm hover:bg-rose-primary/90 transition-all">Subscribe</button>
+                    </div>
+                </div>
+
+                <!-- Form Elements -->
+                <h3 class="text-2xl font-serif font-bold mb-4 mt-8">Form Elements</h3>
+                <p class="mb-4 text-charcoal/80">Forms should be simple, clear, and welcoming. Use generous padding and clear labels.</p>
+                <div class="component-preview">
+                    <div class="w-full max-w-sm space-y-4">
+                        <div>
+                            <label for="name" class="block text-sm font-semibold text-charcoal mb-1">Full Name</label>
+                            <input type="text" id="name" placeholder="e.g., Gloria Wendroff" class="w-full px-4 py-2 border border-beige rounded-lg focus:ring-2 focus:ring-sky-primary focus:border-sky-primary outline-none transition-all">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-semibold text-charcoal mb-1">Email Address</label>
+                            <input type="email" id="email" placeholder="your@email.com" class="w-full px-4 py-2 border border-beige rounded-lg focus:ring-2 focus:ring-sky-primary focus:border-sky-primary outline-none transition-all">
+                        </div>
+                        <div>
+                            <label for="message" class="block text-sm font-semibold text-charcoal mb-1">Your Message</label>
+                            <textarea id="message" rows="4" placeholder="Share your thoughts..." class="w-full px-4 py-2 border border-beige rounded-lg focus:ring-2 focus:ring-sky-primary focus:border-sky-primary outline-none transition-all"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blockquotes -->
+                <h3 class="text-2xl font-serif font-bold mb-4 mt-8">Blockquotes</h3>
+                <p class="mb-4 text-charcoal/80">Use blockquotes to highlight key messages, testimonials, or excerpts from Heavenletters.</p>
+                <div class="bg-white p-8 rounded-xl border border-beige">
+                    <blockquote class="font-serif italic text-2xl border-l-4 border-rose-primary pl-6 py-2 text-charcoal/90">
+                        "We are not just facilitating conversations; we are intentionally creating and nurturing the relational space between people and the divine."
+                    </blockquote>
+                    <p class="text-sm text-charcoal/60 mt-4">— Gloria Wendroff, Founder of Heavenletters</p>
+                </div>
+            </section>
+
+            <!-- Applications -->
+            <section id="applications" class="mb-16">
+                <h2 class="text-4xl font-bold mb-6 font-serif">Applications</h2>
+                <p class="mb-8 text-charcoal/80 leading-relaxed">This design system applies across all Heavenletters touchpoints. Here are specific guidelines for key applications.</p>
+                
+                <div class="space-y-8">
+                    <!-- Email Design -->
+                    <div class="bg-white p-6 rounded-xl border-2 border-sky-primary">
+                        <h3 class="font-serif font-bold text-2xl mb-3">Email Campaigns</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold mb-2">Visual Treatment</h4>
+                                <ul class="space-y-1 text-sm text-charcoal/80">
+                                    <li>• Use cream (#f9f0d9) background</li>
+                                    <li>• Header with logo or rose symbol</li>
+                                    <li>• Generous white space (24-32px padding)</li>
+                                    <li>• Single column layout, max 600px wide</li>
+                                    <li>• Subtle sky imagery as header background (optional)</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-2">Typography & Content</h4>
+                                <ul class="space-y-1 text-sm text-charcoal/80">
+                                    <li>• Serif fonts for Heavenletter content</li>
+                                    <li>• Sans-serif for UI elements and CTAs</li>
+                                    <li>• Line height 1.75 for body text</li>
+                                    <li>• One clear CTA button (rose or sky primary)</li>
+                                    <li>• Gentle P.S. for secondary message</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ebook Design -->
+                    <div class="bg-white p-6 rounded-xl border-2 border-gold-metallic">
+                        <h3 class="font-serif font-bold text-2xl mb-3">Ebooks & PDFs</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold mb-2">Cover Design</h4>
+                                <ul class="space-y-1 text-sm text-charcoal/80">
+                                    <li>• Sky imagery or soft gradient background</li>
+                                    <li>• Pink rose symbol prominently featured</li>
+                                    <li>• Large serif title (EB Garamond or Old Standard TT)</li>
+                                    <li>• Gold accents for divine/spiritual emphasis</li>
+                                    <li>• Clean, uncluttered composition</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-2">Interior Layout</h4>
+                                <ul class="space-y-1 text-sm text-charcoal/80">
+                                    <li>• Cream or white page backgrounds</li>
+                                    <li>• Serif fonts for all Heavenletter text</li>
+                                    <li>• Generous margins (1 inch minimum)</li>
+                                    <li>• Chapter dividers with rose or sky elements</li>
+                                    <li>• Page numbers in charcoal, subtle placement</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Website Design -->
+                    <div class="bg-white p-6 rounded-xl border-2 border-rose-primary">
+                        <h3 class="font-serif font-bold text-2xl mb-3">Website Design</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold mb-2">Visual Structure</h4>
+                                <ul class="space-y-1 text-sm text-charcoal/80">
+                                    <li>• Cream background for main content areas</li>
+                                    <li>• White cards for individual Heavenletters</li>
+                                    <li>• Sky imagery in hero sections (subtle, 30% opacity)</li>
+                                    <li>• Sticky header with logo, minimal navigation</li>
+                                    <li>• Footer with rose symbol and essential links</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-2">Interaction & Motion</h4>
+                                <ul class="space-y-1 text-sm text-charcoal/80">
+                                    <li>• Subtle hover states (slight color shift, no dramatic effects)</li>
+                                    <li>• Smooth transitions (200-300ms)</li>
+                                    <li>• Fades and dissolves over slides and spins</li>
+                                    <li>• Scroll animations: gentle, not jarring</li>
+                                    <li>• Focus states clearly visible for accessibility</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Media -->
+                    <div class="bg-white p-6 rounded-xl border border-beige">
+                        <h3 class="font-serif font-bold text-2xl mb-3">Social Media Graphics</h3>
+                        <ul class="space-y-2 text-charcoal/80">
+                            <li><strong>Profile Images:</strong> Use the pink rose symbol or favicon on cream or white background.</li>
+                            <li><strong>Post Graphics:</strong> Sky or soft gradient backgrounds, serif typography for quotes, rose or angel accents.</li>
+                            <li><strong>Dimensions:</strong> 1:1 for Instagram, 16:9 for Facebook/Twitter headers, 1080x1920 for Stories.</li>
+                            <li><strong>Consistency:</strong> Maintain brand colors and fonts across all social platforms.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Closing -->
+            <footer class="mt-16 pt-8 border-t border-beige">
+                <div class="text-center">
+                    <img src="g2407.png" alt="Pink Rose Symbol" class="w-16 h-16 mx-auto mb-4">
+                    <p class="font-serif text-xl text-charcoal/80 mb-2">This design system is a living document.</p>
+                    <p class="text-charcoal/70">As we hear from readers, volunteers, and team members, we will refine it—keeping the core unchanged: <strong>free sharing, tender speech, and a wide, bright sky.</strong></p>
+                    <p class="text-sm text-charcoal/60 mt-6">Heavenletters Visual Design System | Version 1.0 | October 2025</p>
+                </div>
+            </footer>
+
+        </div>
+    </main>
+
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+    </script>
+</body>
+</html>
+

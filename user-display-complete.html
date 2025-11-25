@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heavenletters Team Directory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Open+Sans:wght@400;600;700&family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Heavenletters Design System */
+        :root {
+            --color-rose-primary: #f4406b;
+            --color-sky-primary: #53ade0;
+            --color-gold-primary: #e9e55f;
+            --color-cream: #f9f0d9;
+            --color-beige: #b7b2a3;
+            --color-charcoal: #403f3e;
+            --color-rose-light: #fc95bd;
+            --color-gold-warm: #f9f0d9;
+            --color-sky-light: #b8ddf2;
+        }
+
+        body {
+            font-family: 'Lexend', 'Open Sans', sans-serif;
+            background-color: var(--color-cream);
+            color: var(--color-charcoal);
+        }
+
+        .font-serif {
+            font-family: 'EB Garamond', 'Old Standard TT', serif;
+        }
+
+        .flip-card {
+            perspective: 1000px;
+            height: 400px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+
+        .initial-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            margin: 0 auto 1rem;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin: 0.125rem;
+        }
+
+        .role-translator { background-color: #f4406b; color: white; }
+        .role-forum-moderator { background-color: #53ade0; color: white; }
+        .role-editor { background-color: #e9e55f; color: #403f3e; }
+        .role-datacapture { background-color: #b7b2a3; color: white; }
+        .role-community-manager { background-color: #d4af37; color: white; }
+        .role-datacapture { background-color: #b7b2a3; color: white; }
+    </style>
+</head>
+<body class="bg-cream">
+    <!-- Header -->
+    <header class="bg-white border-b-2 border-beige p-8">
+        <div class="max-w-6xl mx-auto">
+            <h1 class="text-4xl font-bold text-charcoal font-serif mb-2">Heavenletters Team Directory</h1>
+            <p class="text-charcoal/70 mb-4">Our global community of translators, editors, and moderators bringing Heavenletters to the world</p>
+            <div class="flex flex-wrap gap-6 text-sm">
+                <div class="bg-sky-light px-4 py-2 rounded-lg">
+                    <span class="font-semibold">Total Members:</span> <span id="total-users"></span>
+                </div>
+                <div class="bg-gold-warm px-4 py-2 rounded-lg">
+                    <span class="font-semibold">With Photos:</span> <span id="users-with-pictures"></span>
+                </div>
+                <div class="bg-rose-light px-4 py-2 rounded-lg">
+                    <span class="font-semibold">Roles:</span> Translator, Editor, Moderator, Data Capture, Community Manager
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto p-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="userGrid">
+            <!-- User cards will be inserted here -->
+        </div>
+    </main>
+
+    <script type="text/javascript" src="embedded_data.js"></script>
+
+    <script>
+        function loadAndDisplayUsers() {
+            try {
+                document.getElementById('total-users').textContent = userData.metadata.total_users;
+                document.getElementById('users-with-pictures').textContent = userData.metadata.users_with_pictures;
+
+                const userGrid = document.getElementById('userGrid');
+                userData.users.forEach(user => {
+                    const card = createUserCard(user);
+                    userGrid.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error loading or displaying user data:', error);
+                // Optionally, display an error message to the user
+                document.getElementById('userGrid').innerHTML = '<p class="text-red-500 text-center">Error loading user data. Please ensure the file is accessible and try again.</p>';
+            }
+        }
+
+        function createUserCard(user) {
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'flip-card';
+
+            const avatarHtml = user.picture_path ?
+                `<img src="https://heavenletters.org/${user.picture_path}" alt="${user.username}" class="w-20 h-20 rounded-full object-cover mx-auto mb-4 border-4 border-white shadow-md">` :
+                `<div class="initial-avatar bg-gradient-to-br from-rose-primary to-rose-deep">${user.username.charAt(0).toUpperCase()}</div>`;
+
+            const roleBadges = user.roles.map(role => {
+                const roleClass = `role-${role.role_name.toLowerCase().replace(/\s+/g, '-')}`;
+                return `<span class="role-badge ${roleClass}">${role.role_name}</span>`;
+            }).join('');
+
+            const memberSince = new Date(user.created).getFullYear();
+            const lastLogin = user.last_login ? new Date(user.last_login).toLocaleDateString() : 'N/A';
+            const status = user.status === 1 ? 'Active' : 'Inactive';
+
+            cardDiv.innerHTML = `
+                <div class="flip-card-inner">
+                    <!-- Front of card -->
+                    <div class="flip-card-front bg-white border border-beige shadow-sm hover:shadow-lg transition-shadow flex flex-col justify-center p-6">
+                        ${avatarHtml}
+                        <h3 class="font-serif font-bold text-xl mb-2">${user.username}</h3>
+                        <div class="flex flex-wrap justify-center">
+                            ${roleBadges}
+                        </div>
+                    </div>
+
+                    <!-- Back of card -->
+                    <div class="flip-card-back bg-sky-primary text-white border border-beige shadow-sm p-6 flex flex-col justify-center">
+                        <h3 class="font-serif font-bold text-2xl mb-4">${user.username}</h3>
+                        <div class="space-y-3 text-left text-sm">
+                            <p><span class="font-semibold">Member Since:</span> ${memberSince}</p>
+                            <p><span class="font-semibold">Last Login:</span> ${lastLogin}</p>
+                            <p><span class="font-semibold">Status:</span> ${status}</p>
+                            <p><span class="font-semibold">Language:</span> ${user.language || 'N/A'}</p>
+                            <p><span class="font-semibold">Timezone:</span> ${user.timezone_name || 'N/A'}</p>
+                            ${user.signature ? `<p class="pt-2 italic border-t border-white/30 mt-3"><span class="font-semibold">Signature:</span> "${user.signature}"</p>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            return cardDiv;
+        }
+
+        document.addEventListener('DOMContentLoaded', loadAndDisplayUsers);
+    </script>
+</body>
+</html>
